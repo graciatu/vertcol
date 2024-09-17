@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertebrae Predictor</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Vertebrae Predictor</h1>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#predict">Predict</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="input-section">
+      <h2>Enter Vertebrae Data</h2>
+      <form>
+        <label for="vertebra1">Vertebra Value 1:</label>
+        <input type="number" id="vertebra1" name="vertebra1" placeholder="Enter value">
+        <br />
+        <label for="vertebra2">Vertebra Value 2:</label>
+        <input type="number" id="vertebra2" name="vertebra2" placeholder="Enter value">
+        <br />
+        <button type="submit">Predict Missing Values</button>
+      </form>
+    </section>
+
+    <section id="results-section">
+      <h2>Predicted Vertebra Values</h2>
+      <div id="results-placeholder">
+        <p>No predictions yet.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
+  </footer>
+
+  <script src="js/scripts.js"></script>
+</body>
+</html>
