@@ -4,45 +4,116 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vertebrae Predictor</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../javascript/scripts.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Vertebrae Predictor</h1>
-    <nav>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#predict">Predict</a></li>
-        <li><a href="#about">About</a></li>
-      </ul>
-    </nav>
-  </header>
+    <header>
+        <h1>Vertebrae Predictor</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#predict">Predict</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <main>
-    <section id="input-section">
-      <h2>Enter Vertebrae Data</h2>
-      <form>
-        <label for="vertebra1">Vertebra Value 1:</label>
-        <input type="number" id="vertebra1" name="vertebra1" placeholder="Enter value">
-        <br />
-        <label for="vertebra2">Vertebra Value 2:</label>
-        <input type="number" id="vertebra2" name="vertebra2" placeholder="Enter value">
-        <br />
-        <button type="submit">Predict Missing Values</button>
-      </form>
-    </section>
+    <main>
+        <section id="input-section">
+            <h2>Enter Vertebrae Data</h2>
+            <form method="post" id="inputs">
+                <label for="c2"> C2 Value:</label>
+                <input type="number" id="c2" name="c2" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="c3">C3 Value:</label>
+                <input type="number" id="c3" name="c3" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="c4">C4 Value:</label>
+                <input type="number" id="c4" name="c4" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="c5">C5 Value:</label>
+                <input type="number" id="c5" name="c5" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="c6">C6 Value:</label>
+                <input type="number" id="c6" name="c6" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="c7">C7 Value:</label>
+                <input type="number" id="c7" name="c7" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t1">T1 Value:</label>
+                <input type="number" id="t1" name="t1" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t2">T2 Value:</label>
+                <input type="number" id="t2" name="t2" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t3">T3 Value:</label>
+                <input type="number" id="t3" name="t3" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t4">T4 Value:</label>
+                <input type="number" id="t4" name="t4" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t5">T5 Value:</label>
+                <input type="number" id="t5" name="t5" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t6">T6 Value:</label>
+                <input type="number" id="t6" name="t6" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t7">T7 Value:</label>
+                <input type="number" id="t7" name="t7" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t8">T8 Value:</label>
+                <input type="number" id="t8" name="t8" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t9">T9 Value:</label>
+                <input type="number" id="t9" name="t9" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t10">T10 Value:</label>
+                <input type="number" id="t10" name="t10" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t11">T11 Value:</label>
+                <input type="number" id="t11" name="t11" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="t12">T12 Value:</label>
+                <input type="number" id="t12" name="t12" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="l1">L1 Value:</label>
+                <input type="number" id="l1" name="l1" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="l2">L2 Value:</label>
+                <input type="number" id="l2" name="l2" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="l3">L3 Value:</label>
+                <input type="number" id="l3" name="l3" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="l4">L4 Value:</label>
+                <input type="number" id="l4" name="l4" placeholder="Unknown value" min="0" step="0.001">
+                <br />
+                <label for="l5">L5 Value:</label>
+                <input type="number" id="l5" name="l5" placeholder="Unknown value" min="0" step="0.001">
+                <br />
 
-    <section id="results-section">
-      <h2>Predicted Vertebra Values</h2>
-      <div id="results-placeholder">
-        <p>No predictions yet.</p>
-      </div>
-    </section>
-  </main>
+                <button type="submit">Predict Missing Values</button>
+            </form>
+            <script src="scripts.js"></script>
+        </section>
 
-  <footer>
-    <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
-  </footer>
+        <section id="results-section">
+            <h2>Predicted Vertebra Values</h2>
+            <div>
+                <p id="results-placeholder"></p>
+            </div>
+        </section>
+        <br>
+        <br>
+
+    </main>
+    <footer>
+        <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
 
   <script src="js/scripts.js"></script>
 </body>
