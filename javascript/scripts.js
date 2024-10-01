@@ -1,3 +1,4 @@
+
 document.getElementById("inputs").addEventListener("submit", setValues);
 function checkUnknown(x) {
     if (x === "") {
@@ -9,6 +10,20 @@ function checkUnknown(x) {
 }
 function setValues(){
     event.preventDefault();
+}
+
+document.getElementById("inputs").addEventListener("submit", setValues);
+function checkUnknown(x) {
+    if (x === "") {
+        return 0;
+    }
+    else {
+        return x;
+    }
+}
+function setValues(){
+    event.preventDefault();
+
 
     var c2 = checkUnknown(document.querySelector('#c2').value);
     var c3 = checkUnknown(document.querySelector('#c3').value);
@@ -36,4 +51,10 @@ function setValues(){
 
 
     document.getElementById("results-placeholder").innerHTML = "C2 value is: "+ c2;
-};
+
+
+
+
+    document.getElementById("results-placeholder").innerHTML = "C2 value is: "+ c2;
+
+}
