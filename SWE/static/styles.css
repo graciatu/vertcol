@@ -1,0 +1,104 @@
+/* styles.css */
+body {
+  background-image: url("background.jpg");
+  background-repeat: repeat;
+  background-attachment: fixed;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 30px;
+    font-size: 50px;
+    margin-left: -10px;
+    margin-right: -10px;
+    outline: solid 5px;
+    outline-color: black;
+}
+h1 {
+    text-align: center;
+}
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+form {
+    padding-top: 20px;
+}
+nav ul li {
+  display: inline;
+  margin-right: 15px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+main {
+  padding: 20px;
+}
+
+
+input[type="number"] {
+    padding: 10px;
+    margin-left: 20px;
+    margin-top: 13px;
+    margin-bottom: 13px;
+    width: 200px;
+    outline: solid 2.5px;
+    border-radius: 25px;
+}
+.box:first-child {
+    background-color: lightgreen;
+    border-radius: 25px;
+    outline: solid 2.5px black;
+    padding: 20px;
+}
+.box:nth-child(odd) {
+    background-color: rgba(211, 211, 211, 1);
+    padding: 5px;
+    margin-left: -10px;
+    margin-right: -10px;
+    outline: solid 3px;
+    outline-color: black;
+    border-radius: 25px;
+}
+.box:nth-child(even) {
+    padding: 5px;
+    margin-left: -10px;
+    margin-right: -10px;
+    background-color: rgba(144, 238, 144, 1);
+    border-radius: 25px;
+}
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#results-placeholder {
+  border: 1px solid #ccc;
+  padding: 50px;
+  background-color: #fff;
+  margin-top: 20px;
+}
+
+footer {
+  background-color: #333;
+  color: white;
+  padding: 8px;
+  text-align: center;
+  width: 100%;
+  bottom: 0;
+  margin-top: -50px;
+}

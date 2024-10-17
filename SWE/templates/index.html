@@ -4,86 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href={{url_for('static', filename='styles.css') }} />
 </head>
 <body>
-    <h1>Testing!</h1>
+    <header>Testing!</header>
     <ul>
         {% for Vertebrae in vertices %}
             <li> {{ Vertebrae }} </li>
         {% endfor %}
-
+        
     </ul>
+    <div class="box">
+        <h1>Enter Your Known Vertebra Measurements Below:</h1>
+   </div>
     <form action="{{ url_for('input') }}" method="post">
-        <div>
+        <div class="box">
             <input type="number" name="Vertebrae" placeholder="C2" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae2" placeholder="C3" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae3" placeholder="C4" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae4" placeholder="C5" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae5" placeholder="C6" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae6" placeholder="C7" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae7" placeholder="T1" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae8" placeholder="T2" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae9" placeholder="T3" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae10" placeholder="T4" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae11" placeholder="T5" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae12" placeholder="T6" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae13" placeholder="T7" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae14" placeholder="T8" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae15" placeholder="T9" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae16" placeholder="T10" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae17" placeholder="T11" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae18" placeholder="T12" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae19" placeholder="L1" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae20" placeholder="L2" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae21" placeholder="L3" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae22" placeholder="L4" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <input type="number" name="Vertebrae23" placeholder="L5" min="0" step=".01">
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <label for="Sex">Select Sex:</label>
             <select name="Sex">
                 <option value="" disabled selected>Select a type</option>
@@ -91,15 +95,15 @@
                 <option value="Female">Female</option>
                 <option value="Pooled">Pooled</option>
             </select>
-        </div>
-        <div>
+       </div>
+        <div class="box">
             <label for="Reg">Select Regression Type:</label>
             <select name="Reg">
                 <option value="" disabled selected>Select a type</option>
                 <option value="Linear">Linear</option>
                 <option value="Random Forest">Random Forest</option>
             </select>
-        </div>
+        </div >
         <div>
             <button type="submit">submit</button>
         </div>
