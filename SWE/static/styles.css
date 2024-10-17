@@ -52,8 +52,13 @@ input[type="number"] {
     outline: solid 2.5px;
     border-radius: 25px;
 }
-.box:first-child {
-    background-color: lightgreen;
+.box {
+    display: inline-flex;
+    padding: 50px;
+    width: 25%;
+}
+.open {
+    background-color: rgba(144, 238, 144, 0.9);
     border-radius: 25px;
     outline: solid 2.5px black;
     padding: 20px;
@@ -63,23 +68,38 @@ input[type="number"] {
     padding: 5px;
     margin-left: -10px;
     margin-right: -10px;
-    outline: solid 3px;
-    outline-color: black;
+    outline: solid 2.5px black;
     border-radius: 25px;
 }
 .box:nth-child(even) {
     padding: 5px;
     margin-left: -10px;
     margin-right: -10px;
-    background-color: rgba(144, 238, 144, 1);
+    background-color: rgba(144, 238, 144, 0.9);
     border-radius: 25px;
+    outline: solid 2.5px black;
+}
+.option {
+    padding: 10px;
+    margin-left: -10px;
+    margin-right: -10px;
+    background-color: rgba(144, 238, 144, 0.9);
+    border-radius: 25px;
+    outline: solid 2.5px black;
+    margin-top:10px;
+
 }
 button {
-  padding: 10px 20px;
+  margin-top: 10px;
+  padding: 20px 30px;
   background-color: #4CAF50;
   color: white;
-  border: none;
+  border-radius: 25px;
+  border: 2.5px solid black;
   cursor: pointer;
+  font-size: 20px;
+  margin-left: 50%;
+  margin-right: 50%;
 }
 
 button:hover {
