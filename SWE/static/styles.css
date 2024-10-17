@@ -42,7 +42,7 @@ main {
   padding: 20px;
 }
 
-
+/*both of these (input and .box) are for vertebra inputs
 input[type="number"] {
     padding: 10px;
     margin-left: 20px;
@@ -89,6 +89,8 @@ input[type="number"] {
     margin-top:10px;
 
 }
+
+/*reset and submit button
 button {
   margin-top: 10px;
   padding: 20px 30px;
