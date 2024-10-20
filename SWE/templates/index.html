@@ -9,100 +9,78 @@
 <body>
     <header>Testing!</header>
     
-    <div class="container">
-        <div class="column">
-            <h2>Cervical (C)</h2>
-            {% for Vertebrae in vertices if Vertebrae.startswith('C') %}
-                <div class="box">{{ Vertebrae }}</div>
-            {% endfor %}
-        </div>
-        <div class="column">
-            <h2>Thoracic (T)</h2>
-            {% for Vertebrae in vertices if Vertebrae.startswith('T') %}
-                <div class="box">{{ Vertebrae }}</div>
-            {% endfor %}
-        </div>
-        <div class="column">
-            <h2>Lumbar (L)</h2>
-            {% for Vertebrae in vertices if Vertebrae.startswith('L') %}
-                <div class="box">{{ Vertebrae }}</div>
-            {% endfor %}
-        </div>
-    </div>
-    
+    <ul>
+        {% for Vertebrae in vertices %}
+            <li> {{ Vertebrae }} </li>
+        {% endfor %}
+    </ul>
     <div class="open">
         <h1>Enter Your Known Vertebra Measurements Below:</h1>
-   </div>
+    </div>
     <form action="{{ url_for('input') }}" method="post">
-        <div class="box">
-            <input type="number" name="Vertebrae" placeholder="C2" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae2" placeholder="C3" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae3" placeholder="C4" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae4" placeholder="C5" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae5" placeholder="C6" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae6" placeholder="C7" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae7" placeholder="T1" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae8" placeholder="T2" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae9" placeholder="T3" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae10" placeholder="T4" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae11" placeholder="T5" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae12" placeholder="T6" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae13" placeholder="T7" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae14" placeholder="T8" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae15" placeholder="T9" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae16" placeholder="T10" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae17" placeholder="T11" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae18" placeholder="T12" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae19" placeholder="L1" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae20" placeholder="L2" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae21" placeholder="L3" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae22" placeholder="L4" min="0" step=".01">
-       </div>
-        <div class="box">
-            <input type="number" name="Vertebrae23" placeholder="L5" min="0" step=".01">
-       </div>
+        <div class="container">
+            <div class="column">
+                <h2>C Vertebrae</h2>
+                <div class="box">
+                    <input type="number" name="Vertebrae" placeholder="C2" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae2" placeholder="C3" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae3" placeholder="C4" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae4" placeholder="C5" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae5" placeholder="C6" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae6" placeholder="C7" min="0" step=".01">
+                </div>
+            </div>
+            <div class="column">
+                <h2>T Vertebrae</h2>
+                <div class="box">
+                    <input type="number" name="Vertebrae7" placeholder="T1" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae8" placeholder="T2" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae9" placeholder="T3" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae10" placeholder="T4" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae11" placeholder="T5" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae12" placeholder="T6" min="0" step=".01">
+                </div>
+            </div>
+            <div class="column">
+                <h2>L Vertebrae</h2>
+                <div class="box">
+                    <input type="number" name="Vertebrae13" placeholder="L1" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae14" placeholder="L2" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae15" placeholder="L3" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae16" placeholder="L4" min="0" step=".01">
+                </div>
+                <div class="box">
+                    <input type="number" name="Vertebrae17" placeholder="L5" min="0" step=".01">
+                </div>
+            </div>
+        </div>
+    
         <div class="option">
             <label for="Sex">Select Sex:</label>
             <select name="Sex">
