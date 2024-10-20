@@ -8,12 +8,28 @@
 </head>
 <body>
     <header>Testing!</header>
-    <ul>
-        {% for Vertebrae in vertices %}
-            <li> {{ Vertebrae }} </li>
-        {% endfor %}
-        
-    </ul>
+    
+    <div class="container">
+        <div class="column">
+            <h2>Cervical (C)</h2>
+            {% for Vertebrae in vertices if Vertebrae.startswith('C') %}
+                <div class="box">{{ Vertebrae }}</div>
+            {% endfor %}
+        </div>
+        <div class="column">
+            <h2>Thoracic (T)</h2>
+            {% for Vertebrae in vertices if Vertebrae.startswith('T') %}
+                <div class="box">{{ Vertebrae }}</div>
+            {% endfor %}
+        </div>
+        <div class="column">
+            <h2>Lumbar (L)</h2>
+            {% for Vertebrae in vertices if Vertebrae.startswith('L') %}
+                <div class="box">{{ Vertebrae }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    
     <div class="open">
         <h1>Enter Your Known Vertebra Measurements Below:</h1>
    </div>
