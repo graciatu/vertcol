@@ -18,6 +18,7 @@ header {
 }
 h1 {
     text-align: center;
+    color: green;
 }
 nav ul {
   list-style-type: none;
