@@ -204,42 +204,24 @@ def index():
 
 @app.route("/input", methods=["POST"])
 def input():
-    #vertIN = request.form['Vertebrae']
-    vertices = []
-    sex = ''
-    regression = ''
-    vertices.append(request.form['Vertebrae'])
-    vertices.append(request.form['Vertebrae2'])
-    vertices.append(request.form['Vertebrae3'])
-    vertices.append(request.form['Vertebrae4'])
-    vertices.append(request.form['Vertebrae5'])
-    vertices.append(request.form['Vertebrae6'])
-    vertices.append(request.form['Vertebrae7'])
-    vertices.append(request.form['Vertebrae8'])
-    vertices.append(request.form['Vertebrae9'])
-    vertices.append(request.form['Vertebrae10'])
-    vertices.append(request.form['Vertebrae11'])
-    vertices.append(request.form['Vertebrae12'])
-    vertices.append(request.form['Vertebrae13'])
-    vertices.append(request.form['Vertebrae14'])
-    vertices.append(request.form['Vertebrae15'])
-    vertices.append(request.form['Vertebrae16'])
-    vertices.append(request.form['Vertebrae17'])
-    vertices.append(request.form['Vertebrae18'])
-    vertices.append(request.form['Vertebrae19'])
-    vertices.append(request.form['Vertebrae20'])
-    vertices.append(request.form['Vertebrae21'])
-    vertices.append(request.form['Vertebrae22'])
-    vertices.append(request.form['Vertebrae23'])
-    for i in range(23):
-        if vertices[i] == '':
-            vertices[i]=0
-        new_data.iloc[:,i] = float(vertices[i])
+
+    vertibrae_C = []
+    vertibrae_T = []
+    vertibrae_L = []
     
-    sex = request.form['Sex']
-    #print(sex)
-    regression = request.form['Reg']
-    return redirect(url_for("getPrediction", sex=sex, regression=regression))
+    for i in range(1, 8):  # C vertebrae from C2 to C7
+        vertibrae_C.append(request.form[f'Vertebrae{i}'])
+    
+    for i in range(8, 20):  # T vertebrae from T1 to T12
+        vertibrae_T.append(request.form[f'Vertebrae{i}'])
+    
+    for i in range(20, 24):  # L vertebrae from L1 to L5
+        vertibrae_L.append(request.form[f'Vertebrae{i}'])
+
+    print(vertibrae_T)  # Print the list of vertebrae inputs for debugging
+
+    # Pass these lists to the template
+    return render_template("index.html", vertices_C=vertices_C, vertices_T=vertices_T, vertices_L=vertices_L)
 #print(sex)
 @app.route("/predict", methods=["GET"])
 def getPrediction():
