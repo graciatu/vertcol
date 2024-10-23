@@ -18,6 +18,7 @@ header {
 }
 h1 {
     text-align: center;
+    color: black;
 }
 nav ul {
   list-style-type: none;
@@ -42,8 +43,13 @@ main {
   padding: 20px;
 }
 
-/*both of these (input and .box) are for vertebra inputs
-input[type="number"] {
+
+/*.column {
+    flex: 1;  Each column will take equal width 
+    padding: 10px; Adds padding inside each column 
+}*/
+/*both of these (input and .box) are for vertebra inputs*/
+/*input[type="number"] {
     padding: 10px;
     margin-left: 20px;
     margin-top: 13px;
@@ -51,60 +57,58 @@ input[type="number"] {
     width: 200px;
     outline: solid 2.5px;
     border-radius: 25px;
-}
+}*/
 .box {
     display: inline-flex;
-    padding: 50px;
     width: 25%;
 }
-.open {
-    background-color: rgba(144, 238, 144, 0.9);
+.vertebra-container {
+  display: flex;            /* Use Flexbox */
+  justify-content: center; /* Distribute space evenly */
+  align-items: flex-start; /* Align items at the top */
+  gap: 20px;              /* Space between columns */
+}
+
+.vertebra-column {
+  flex: 1;                 /* Allow columns to grow equally */
+  margin: 10px;           /* Add some space between columns */
+}
+
+/*.open {
     border-radius: 25px;
     outline: solid 2.5px black;
     padding: 20px;
-}
-.box:nth-child(odd) {
-    background-color: rgba(211, 211, 211, 1);
-    padding: 5px;
-    margin-left: -10px;
-    margin-right: -10px;
-    outline: solid 2.5px black;
-    border-radius: 25px;
-}
-.box:nth-child(even) {
-    padding: 5px;
-    margin-left: -10px;
-    margin-right: -10px;
-    background-color: rgba(144, 238, 144, 0.9);
-    border-radius: 25px;
-    outline: solid 2.5px black;
-}
+    
+}*/
 .option {
     padding: 10px;
-    margin-left: -10px;
-    margin-right: -10px;
+    /*margin-left: -10px;
+    margin-right: -10px;*/
     background-color: rgba(144, 238, 144, 0.9);
-    border-radius: 25px;
-    outline: solid 2.5px black;
+    /*border-radius: 25px;
+    outline: solid 2.5px black;*/
     margin-top:10px;
 
 }
 
-/*reset and submit button
-button {
-  margin-top: 10px;
+/*reset and submit button*/
+.form-buttons {
+  display: flex;
+  justify-content: center; /* Center buttons horizontally */
+  gap: 10px;              /* Space between buttons */
+  margin-top: 20px;   
   padding: 20px 30px;
   background-color: #4CAF50;
   color: white;
-  border-radius: 25px;
-  border: 2.5px solid black;
+  /*border-radius: 25px;*/
+  border: 2.5px solid #4CAF50;
   cursor: pointer;
   font-size: 20px;
   margin-left: 50%;
   margin-right: 50%;
 }
 
-button:hover {
+.form-buttons:hover {
   background-color: #45a049;
 }
 
