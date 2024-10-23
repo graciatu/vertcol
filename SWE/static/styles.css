@@ -42,14 +42,16 @@ nav ul li a {
 main {
   padding: 20px;
 }
-.container {
-    display: flex;
-    justify-content: space-between; /* Distributes space between columns */
+.vertebra-container {
+  display: flex;            /* Use Flexbox */
+  justify-content: center; /* Distribute space evenly */
+  align-items: flex-start; /* Align items at the top */
+  gap: 20px;              /* Space between columns */
 }
 
-.column {
-    flex: 1; /* Each column will take equal width */
-    padding: 10px; /* Adds padding inside each column */
+.vertebra-column {
+  flex: 1;                 /* Allow columns to grow equally */
+  margin: 10px;           /* Add some space between columns */
 }
 /*both of these (input and .box) are for vertebra inputs
 input[type="number"] {
@@ -100,21 +102,24 @@ input[type="number"] {
 
 }
 
-/*reset and submit button
-button {
-  margin-top: 10px;
+/*reset and submit button*/
+.form-buttons {
+  display: flex;
+  justify-content: center; /* Center buttons horizontally */
+  gap: 10px;              /* Space between buttons */
+  margin-top: 20px;   
   padding: 20px 30px;
   background-color: #4CAF50;
   color: white;
-  border-radius: 25px;
-  border: 2.5px solid black;
+  /*border-radius: 25px;*/
+  border: 2.5px solid #4CAF50;
   cursor: pointer;
   font-size: 20px;
   margin-left: 50%;
   margin-right: 50%;
 }
 
-button:hover {
+.form-buttons:hover {
   background-color: #45a049;
 }
 
