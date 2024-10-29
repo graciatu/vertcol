@@ -19,7 +19,7 @@
     </header>
     
     <div class="open">
-        <h1>Enter Your Known Vertebra Measurements Below:</h1>
+        <h1>Enter Known Vertebra Measurements Below:</h1>
     </div>
     
     <form action="{{ url_for('input') }}" method="POST">
@@ -27,7 +27,7 @@
             <div class="vertebra-column"> 
                 <h2>Cervical Vertebrae</h2>
                 {% for vertebra in cervical %}
-                    <label for="{{ vertebra }}">{{ vertebra }}:</label>
+                    <label class ="label" for="{{ vertebra }}">{{ vertebra }}:</label>
                     <input type="number" name="{{ vertebra }}" id="{{ vertebra }}"  min="0" step=".01">
                     <br>
                 {% endfor %}
@@ -35,7 +35,7 @@
             <div class="vertebra-column"> 
                 <h2>Thoracic Vertebrae</h2>
                 {% for vertebra in thoracic %}
-                    <label for="{{ vertebra }}">{{ vertebra }}:</label>
+                    <label class ="label" for="{{ vertebra }}">{{ vertebra }}:</label>
                     <input type="number" name="{{ vertebra }}" id="{{ vertebra }}"  min="0" step=".01">
                     <br>
                 {% endfor %}
@@ -43,7 +43,7 @@
             <div class="vertebra-column"> 
                 <h2>Lumbar Vertebrae</h2>
                 {% for vertebra in lumbar %}
-                    <label for="{{ vertebra }}">{{ vertebra }}:</label>
+                    <label class ="label" for="{{ vertebra }}">{{ vertebra }}:</label>
                     <input type="number" name="{{ vertebra }}" id="{{ vertebra }}"  min="0" step=".01">
                     <br>
                 {% endfor %}
