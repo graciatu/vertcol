@@ -58,6 +58,50 @@ main {
   padding: 20px;
 }
 
+.open {
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  width: 750px;
+  text-align: center;
+}
+/*this is for the input labels*/
+.label {
+  font-family: "Poppins", serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+label {
+  width: 20px; /* Fixed width for labels */
+  text-align: right; /* Align label text to the right */
+  display: inline-block; /* Ensures label width is respected */
+}
+
+input {
+  border: 1px solid #9c9fa4; /* Add a border style */
+  border-radius: 4px;
+  padding: 5px; /* Add padding for better appearance */
+  width: 150px; /* Set a fixed width for inputs */
+}
+input:focus {
+    border-color: #007bff; /* Change border color on focus (use your preferred color) */
+    outline: none; /* Remove default outline */
+}
+
+.vertebra-container {
+  display: flex;            /* Use Flexbox */
+  justify-content: center; /* Distribute space evenly */
+  gap: 10px;              /* Space between columns */
+  width: 800px;
+}
+
+.vertebra-column {
+  flex: 1;                 /* Allow columns to grow equally */
+  margin: 10px;           /* Add some space between columns */
+  grid-template-columns: 100px auto; /* Fixed width for labels, remaining space for inputs */
+}
 
 /*.column {
     flex: 1;  Each column will take equal width 
@@ -77,24 +121,7 @@ main {
     display: inline-flex;
     width: 25%;
 }
-.vertebra-container {
-  display: flex;            /* Use Flexbox */
-  justify-content: center; /* Distribute space evenly */
-  align-items: flex-start; /* Align items at the top */
-  gap: 20px;              /* Space between columns */
-}
 
-.vertebra-column {
-  flex: 1;                 /* Allow columns to grow equally */
-  margin: 10px;           /* Add some space between columns */
-}
-
-/*.open {
-    border-radius: 25px;
-    outline: solid 2.5px black;
-    padding: 20px;
-    
-}*/
 .option {
     padding: 10px;
     /*margin-left: -10px;
