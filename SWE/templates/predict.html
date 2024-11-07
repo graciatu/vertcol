@@ -3,27 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prediction Results</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        h1 {
-            color: #333;
-        }
-        .result {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-    </style>
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/a84d8a8724.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href={{url_for('static', filename='styles.css') }} />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
 </head>
 <body>
+
+    <div id="containAll">
+        <div id="head">
+            <header>Predictor</header>
+            <nav>
+                <ul>
+                    <li><i class="fa-solid fa-circle-info"></i><a href={{ url_for('about') }}>About Page</a></li>
+                    <li><i class="fa-solid fa-chart-line"></i><a href={{ url_for('predict') }}>Predict</a></li>
+                </ul>
+            </nav>
+        </div>
+    
+        <br>
+            <div class="title-predict" id="predict">
+                <h2>Enter Your Known Vertebra Measurements Below:</h2>
+
+            </div>
+        
+        <form action="{{ url_for('input') }}" method="POST">
+            <div class="vertebra-container">
+                <div class="vertebra-column"> 
+                    <h2>Cervical</h2>
+                    {% for vertebra in cervical %}
+                        <label class ="label" for="{{ vertebra }}">{{ vertebra }}:</label>
+                        <input type="number" name="{{ vertebra }}" id="{{ vertebra }}"  min="0" step=".01">
+                        <br>
+                    {% endfor %}
+                </div>
+                <div class="vertebra-column"> 
+                    <h2>Thoracic</h2>
+                    {% for vertebra in thoracic %}
+                        <label class ="label" for="{{ vertebra }}">{{ vertebra }}:</label>
+                        <input type="number" name="{{ vertebra }}" id="{{ vertebra }}"  min="0" step=".01">
+                        <br>
+                    {% endfor %}
+                </div>
+                <div class="vertebra-column"> 
+                    <h2>Lumbar</h2>
+                    {% for vertebra in lumbar %}
+                        <label class ="label" for="{{ vertebra }}">{{ vertebra }}:</label>
+                        <input type="number" name="{{ vertebra }}" id="{{ vertebra }}"  min="0" step=".01">
+                        <br>
+                    {% endfor %}
+                </div>
+            </div>
+        
+            <div id="colorbox3">
+                <label for="Reg">Select Regression Type:</label>
+                <select name="Reg">
+                    <option value="" disabled selected>Select a type</option>
+                    <option value="Linear">Linear</option>
+                    <option value="Random Forest">Random Forest</option>
+                </select>
+            </div>
+            <div id="colorbox3">
+                <label for="Sex">Select Sex:</label>
+                <select name="Sex">
+                    <option value="" disabled selected>Select a type</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Pooled">Pooled</option>
+                </select>
+            </div>
+            <div id="colorbox3">
+                <button type="submit">Submit</button>
+            </div>
+            <div id ="colorbox3">
+                <button type="reset">Reset</button> <!-- Reset button -->
+            </div>
+        </form>
+=======
     <h1>Prediction Results</h1>
     <div class="result" style="margin-bottom: 50px;">
         <h2>User Message: {{ msg | safe}}</h2>
@@ -56,4 +118,9 @@
     </div>
 
 </body>
+
+<footer>
+    <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
+</footer>
 </html>
+

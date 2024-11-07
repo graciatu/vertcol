@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        .result {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prediction Results</h1>
+    <div class="result" style="margin-bottom: 50px;">
+        <h2>User Message: {{ msg | safe}}</h2>
+    </div>
+    </div>
+    <div class="result">
+        <h2>Prediction: {{ prediction }}</h2>
+    </div>
+    <div class="result">
+        <h2>R² Value: {{ r2 }}</h2>
+    </div>
+    <div class="result">
+        <h2>Sum of Squared Errors (SSE): {{ sse }}</h2>
+    </div>
+    <div class="result">
+        <h2>Standard Error of Estimate (SEE): {{ see }}</h2>
+    </div>
+    <div class="result">
+        <h2>Max Prediction: {{ maxP }}</h2>
+    </div>
+    <div class="result">
+        <h2>Min Prediction: {{ minP }}</h2>
+    </div>
+    </div>
+    <div class="result" style="margin-top: 50px;">
+        <h2>Expected R² Value: {{ er }}</h2>
+    </div>
+    <div class="result">
+        <h2>Expected Standard Error of Estimate (SEE): {{ esse }}</h2>
+    </div>
+
+</body>
+</html>
