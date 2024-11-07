@@ -131,8 +131,8 @@ def predict_sum_verts(user_input, user_gender):
     #num_non_null_features = len(non_null_features)
     num_non_null_features = 24
    
-    if num_non_null_features < 14:
-        print("Warning: Insufficient data. Please provide at least 14 non-null features for accurate prediction.")
+    #if num_non_null_features < 14:
+    #    print("Warning: Insufficient data. Please provide at least 14 non-null features for accurate prediction.")
     
     gender_means = mean_values_by_gender.loc[user_gender]
     
@@ -145,11 +145,11 @@ def predict_sum_verts(user_input, user_gender):
             #print("Flag")
             num_non_null_features -=1
             user_input[feature] = gender_means[feature]
-        else:
-            if (user_input[feature] < min_values[feature]).all() or (user_input[feature] > max_values[feature]).all():
-                print(f"Warning: The value for '{feature}' is out of bounds! "
-                      f"Expected range: [{min_values[feature]}, {max_values[feature]}], "
-                      f"but got: {user_input[feature]}.")
+        #else:
+        #    if (user_input[feature] < min_values[feature]).all() or (user_input[feature] > max_values[feature]).all():
+        #        print(f"Warning: The value for '{feature}' is out of bounds! "
+        #              f"Expected range: [{min_values[feature]}, {max_values[feature]}], "
+        #              f"but got: {user_input[feature]}.")
     #print(num_non_null_features)
     input_df = pd.DataFrame([user_input], columns=spine_features)
 
@@ -249,47 +249,30 @@ vertices = []
 #render_template("index.html")
 @app.route("/")
 def index():
-    return render_template("index.html")
+    cervical = ["C2", "C3", "C4", "C5", "C6", "C7"]
+    thoracic = ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"]
+    lumbar = ["L1", "L2", "L3", "L4", "L5"]
+    
+    return render_template("index.html", cervical=cervical, thoracic=thoracic, lumbar=lumbar)
 
 @app.route("/input", methods=["POST"])
 def input():
-    #vertIN = request.form['Vertebrae']
-    vertices = []
-    sex = ''
-    regression = ''
-    vertices.append(request.form['Vertebrae'])
-    vertices.append(request.form['Vertebrae2'])
-    vertices.append(request.form['Vertebrae3'])
-    vertices.append(request.form['Vertebrae4'])
-    vertices.append(request.form['Vertebrae5'])
-    vertices.append(request.form['Vertebrae6'])
-    vertices.append(request.form['Vertebrae7'])
-    vertices.append(request.form['Vertebrae8'])
-    vertices.append(request.form['Vertebrae9'])
-    vertices.append(request.form['Vertebrae10'])
-    vertices.append(request.form['Vertebrae11'])
-    vertices.append(request.form['Vertebrae12'])
-    vertices.append(request.form['Vertebrae13'])
-    vertices.append(request.form['Vertebrae14'])
-    vertices.append(request.form['Vertebrae15'])
-    vertices.append(request.form['Vertebrae16'])
-    vertices.append(request.form['Vertebrae17'])
-    vertices.append(request.form['Vertebrae18'])
-    vertices.append(request.form['Vertebrae19'])
-    vertices.append(request.form['Vertebrae20'])
-    vertices.append(request.form['Vertebrae21'])
-    vertices.append(request.form['Vertebrae22'])
-    vertices.append(request.form['Vertebrae23'])
-    print("done")
-    for i in range(23):
-        if vertices[i] == '':
-            vertices[i]=0
-        new_data.iloc[:,i] = float(vertices[i])
+
+    vertibrae_C = []
+    vertibrae_T = []
+    vertibrae_L = []
     
-    sex = request.form['Sex']
-    #print(sex)
-    regression = request.form['Reg']
-    return redirect(url_for("getPrediction", sex=sex, regression=regression))
+    for i in range(1, 8):  # C vertebrae from C2 to C7
+        vertibrae_C.append(request.form[f'Vertebrae{i}'])
+    
+    for i in range(8, 20):  # T vertebrae from T1 to T12
+        vertibrae_T.append(request.form[f'Vertebrae{i}'])
+    
+    for i in range(20, 24):  # L vertebrae from L1 to L5
+        vertibrae_L.append(request.form[f'Vertebrae{i}'])
+
+    # Pass these lists to the template
+    return render_template("index.html", cervical=vertibrae_C, thoracic=vertibrae_T, lumbar=vertibrae_L)
 #print(sex)
 @app.route("/predict", methods=["GET"])
 def getPrediction():
@@ -300,9 +283,17 @@ def getPrediction():
     results = 0
     sex = request.args.get('sex')
     regression = request.args.get('regression')
-    
-    #total_sampling(vert_data_A, t=10)
-    #print(sex)
+    count = 22
+    userMsg = ""
+    range_values = [7.84, 8.81, 9.22, 8.12, 6.35, 6.67, 7.52, 5.34, 6.44, 3.91, 4.45, 3.99, 3.27, 3.25, 3.44, 2.32, 2.13, 2.22, 1.94, 1.95, 1.48, 1.31]
+    r2_values = [0.6495834, 0.8036646, 0.8709024, 0.9070805, 0.9294138, 0.9448142, 0.9561731, 0.9643529, 0.9708922, 0.9759164, 0.9799633, 0.983338, 0.9861995, 0.9885503, 0.9906716, 0.9923827, 0.9939365, 0.9952556, 0.9964237, 0.9974959, 0.9984204, 0.9992389]
+    for i in range (new_data_imputed.shape[1]):
+        if (new_data_imputed.iloc[:, i] != 0).all() and (new_data_imputed.iloc[:, i] < min_values[vertebrae_names[i]]).all() or (new_data_imputed.iloc[:, i] > max_values[vertebrae_names[i]]).all():
+                userMsg+=(f"<br>Warning: The value for '{vertebrae_names[i]}' is out of bounds! "
+                      f"Expected range: [{min_values[vertebrae_names[i]]}, {max_values[vertebrae_names[i]]}].<br>")
+    #print(userMsg)
+    if(userMsg ==""):
+        userMsg = "Prediction Made Successfully"
     if regression == "Linear":
         if sex == 'Male': #selecting correct model and data based on sex
             vert_data = vert_data_M 
@@ -315,31 +306,37 @@ def getPrediction():
             results = results_A
         for i in range(new_data_imputed.shape[1]):
             if (new_data_imputed.iloc[:, i] == 0).any():
+                count -=1
                 mean_value = vert_data.iloc[:, i].mean()  # Calculate mean
                 new_data_imputed.iloc[:, i] = mean_value
         X_columns = results["model"].model.exog_names  
         new_data_imputed = new_data_imputed.reindex(columns=X_columns, fill_value=0)
         predictions = results["model"].predict(new_data_imputed)
-        print(results['estimate'])
-        print(predictions[0])
-        print(results['R2'])
-        print(results['SEE'])
-        print(results['max_estimate'])
-        print(results['min_estimate'])
-        return render_template("predict.html", prediction = predictions[0], r2 = results['R2'], sse = results['SSE'], see = results['SEE'])
+        #print(results['estimate'])
+        #print(predictions[0])
+        #print(results['R2'])
+        #print(results['SEE'])
+        #print(results['max_estimate'])
+        #print(results['min_estimate'])
+        #print(count)
+        return render_template("predict.html", msg = userMsg, prediction = predictions[0], r2 = results['R2'], sse = results['SSE'], see = results['SEE'], maxP = results['max_estimate'], minP = results['min_estimate'] ,er =r2_values[count], esse = range_values[count])
     else:
         if sex == 'Male': #selecting correct model and data based on sex
             vert_data = vert_data_M 
             gender = 'M'
-            #results = results_M
+            results = results_M
         elif sex == 'Female':
             vert_data = vert_data_F
             gender = 'F'
-            #results = results_F
+            results = results_F
         else:
             vert_data = vert_data_A 
             gender = 'UD'
-            #results = results_A
+            results = results_A
+        for i in range(new_data_imputed.shape[1]):
+            if (new_data_imputed.iloc[:, i] == 0).any():
+                count -=1
+        #print(count)
         user_input_data = {
         'C2': new_data_imputed.iloc[:, 0],
         'C3': new_data_imputed.iloc[:, 1],
@@ -365,10 +362,10 @@ def getPrediction():
         'L4': new_data_imputed.iloc[:, 21],
         'L5': new_data_imputed.iloc[:, 22],
         }
-        print("RF")
+        #print("RF")
         predicted_sum_verts, r_squared, standard_errors, confidence_interval = predict_sum_verts(user_input_data, gender)
         #predicted_sum_verts = predict_sum_verts(user_input_data, sex)
-        return render_template("predict.html", prediction = predicted_sum_verts, r2 = r_squared, sse =  results_rf[gender]["Mean Squared Error (Cross-Validation)"] *23, see = standard_errors)
+        return render_template("predict.html", msg = userMsg, prediction = predicted_sum_verts, r2 = r_squared, sse =  results_rf[gender]["Mean Squared Error (Cross-Validation)"] *23, see = standard_errors,  maxP = results['max_estimate'], minP = results['min_estimate'] ,er =r2_values[count], esse = range_values[count])
 
 if __name__ == '__main__':
     app.run(debug=True)
