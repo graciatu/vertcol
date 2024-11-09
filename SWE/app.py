@@ -269,13 +269,24 @@ def input():
     
     for i in range(1, 8):  # C vertebrae from C2 to C7
         vertibrae_C.append(request.form[f'Vertebrae{i}'])
+        #if(vertibrae_C[i] == ''):
+        #    vertibrae_C[i] = 0
+        #new_data.iloc[:,i] = float(vertibrae_C[i])
     
     for i in range(8, 20):  # T vertebrae from T1 to T12
         vertibrae_T.append(request.form[f'Vertebrae{i}'])
+         #if(vertibrae_T[i] == ''):
+        #    vertibrae_T[i] = 0
+        #new_data.iloc[:,i] = float(vertibrae_T[i])
     
     for i in range(20, 24):  # L vertebrae from L1 to L5
         vertibrae_L.append(request.form[f'Vertebrae{i}'])
-
+        #if(vertibrae_L[i] == ''):
+        #    vertibrae_L[i] = 0
+        #new_data.iloc[:,i] = float(vertibrae_L[i])
+    #sex = request.form['Sex']
+    #regression = request.form['Reg']
+    #return redirect(url_for("getPrediction", sex=sex, regression=regression))
     # Pass these lists to the template
     return render_template("predict.html", cervical=vertibrae_C, thoracic=vertibrae_T, lumbar=vertibrae_L)
 #print(sex)
