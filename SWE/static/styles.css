@@ -332,6 +332,19 @@ input[type="number"] {
     padding: 20px;
 }
 
+.vertebra-container {
+    display: flex;            /* Use Flexbox */
+    justify-content: center; /* Distribute space evenly */
+    gap: 10px;              /* Space between columns */
+    width: 800px;
+  }
+  
+  .vertebra-column {
+    flex: 1;                 /* Allow columns to grow equally */
+    margin: 10px;           /* Add some space between columns */
+    grid-template-columns: 100px auto; /* Fixed width for labels, remaining space for inputs */
+  }
+
 
 /*drop down selction menus*/
 .option {
