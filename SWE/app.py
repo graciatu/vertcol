@@ -342,7 +342,8 @@ def getPrediction():
         #print(results['max_estimate'])
         #print(results['min_estimate'])
         #print(count)
-return render_template("results.html", msg=userMsg, prediction=round(predictions[0], 1), r2=round(results['R2'], 4), sse=round(results['SSE'], 4), see=round(results['SEE'], 4), maxP=round(results['max_estimate'], 1), minP=round(results['min_estimate'], 1), er=round(r2_values[count], 4), esse=round(range_values[count], 4))    else:
+    return render_template("results.html", msg=userMsg, prediction=round(predictions[0], 1), r2=round(results['R2'], 4), sse=round(results['SSE'], 4), see=round(results['SEE'], 4), maxP=round(results['max_estimate'], 1), minP=round(results['min_estimate'], 1), er=round(r2_values[count], 4), esse=round(range_values[count], 4))
+    else:
         if sex == 'Male': #selecting correct model and data based on sex
             vert_data = vert_data_M 
             gender = 'M'
@@ -387,6 +388,6 @@ return render_template("results.html", msg=userMsg, prediction=round(predictions
         #print("RF")
         predicted_sum_verts, r_squared, standard_errors, confidence_interval = predict_sum_verts(user_input_data, gender)
         #predicted_sum_verts = predict_sum_verts(user_input_data, sex)
-return render_template("results.html", msg = userMsg, prediction = predicted_sum_verts, r2 = r_squared, sse =  round(results_rf[gender]["Mean Squared Error (Cross-Validation)"]*23, 4), see = standard_errors,  maxP = results['max_estimate'], minP = results['min_estimate'] ,er =r2_values[count], esse = range_values[count])
+        return render_template("results.html", msg = userMsg, prediction = predicted_sum_verts, r2 = r_squared, sse =  round(results_rf[gender]["Mean Squared Error (Cross-Validation)"]*23, 4), see = standard_errors,  maxP = results['max_estimate'], minP = results['min_estimate'] ,er =r2_values[count], esse = range_values[count])
 if __name__ == '__main__':
     app.run(debug=True)
