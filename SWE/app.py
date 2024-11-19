@@ -342,7 +342,7 @@ def getPrediction():
         #print(results['max_estimate'])
         #print(results['min_estimate'])
         #print(count)
-    return render_template("results.html", msg=userMsg, prediction=round(predictions[0], 1), r2=round(results['R2'], 4), sse=round(results['SSE'], 4), see=round(results['SEE'], 4), maxP=round(results['max_estimate'], 1), minP=round(results['min_estimate'], 1), er=round(r2_values[count], 4), esse=round(range_values[count], 4))
+        return render_template("results.html", msg=userMsg, prediction=round(predictions[0], 1), r2=round(results['R2'], 4), sse=round(results['SSE'], 4), see=round(results['SEE'], 4), maxP=round(results['max_estimate'], 1), minP=round(results['min_estimate'], 1), er=round(r2_values[count], 4), esse=round(range_values[count], 4))
     else:
         if sex == 'Male': #selecting correct model and data based on sex
             vert_data = vert_data_M 
