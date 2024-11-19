@@ -262,33 +262,40 @@ def about():
 
 @app.route("/input", methods=["POST"])
 def input():
-
-    vertibrae_C = []
-    vertibrae_T = []
-    vertibrae_L = []
+    vertices = []
+    sex = ''
+    regression = ''
+    vertices.append(request.form['Vertebrae'])
+    vertices.append(request.form['Vertebrae2'])
+    vertices.append(request.form['Vertebrae3'])
+    vertices.append(request.form['Vertebrae4'])
+    vertices.append(request.form['Vertebrae5'])
+    vertices.append(request.form['Vertebrae6'])
+    vertices.append(request.form['Vertebrae7'])
+    vertices.append(request.form['Vertebrae8'])
+    vertices.append(request.form['Vertebrae9'])
+    vertices.append(request.form['Vertebrae10'])
+    vertices.append(request.form['Vertebrae11'])
+    vertices.append(request.form['Vertebrae12'])
+    vertices.append(request.form['Vertebrae13'])
+    vertices.append(request.form['Vertebrae14'])
+    vertices.append(request.form['Vertebrae15'])
+    vertices.append(request.form['Vertebrae16'])
+    vertices.append(request.form['Vertebrae17'])
+    vertices.append(request.form['Vertebrae18'])
+    vertices.append(request.form['Vertebrae19'])
+    vertices.append(request.form['Vertebrae20'])
+    vertices.append(request.form['Vertebrae21'])
+    vertices.append(request.form['Vertebrae22'])
+    vertices.append(request.form['Vertebrae23'])
+    for i in range(23):
+        if vertices[i] == '':
+            vertices[i]=0
+        new_data.iloc[:,i] = float(vertices[i])
     
-    for i in range(1, 8):  # C vertebrae from C2 to C7
-        vertibrae_C.append(request.form[f'Vertebrae{i}'])
-        #if(vertibrae_C[i] == ''):
-        #    vertibrae_C[i] = 0
-        #new_data.iloc[:,i] = float(vertibrae_C[i])
-    
-    for i in range(8, 20):  # T vertebrae from T1 to T12
-        vertibrae_T.append(request.form[f'Vertebrae{i}'])
-         #if(vertibrae_T[i] == ''):
-        #    vertibrae_T[i] = 0
-        #new_data.iloc[:,i] = float(vertibrae_T[i])
-    
-    for i in range(20, 24):  # L vertebrae from L1 to L5
-        vertibrae_L.append(request.form[f'Vertebrae{i}'])
-        #if(vertibrae_L[i] == ''):
-        #    vertibrae_L[i] = 0
-        #new_data.iloc[:,i] = float(vertibrae_L[i])
-    #sex = request.form['Sex']
-    #regression = request.form['Reg']
-    #return redirect(url_for("getPrediction", sex=sex, regression=regression))
-    # Pass these lists to the template
-    return render_template("predict.html", cervical=vertibrae_C, thoracic=vertibrae_T, lumbar=vertibrae_L)
+    sex = request.form['Sex']
+    regression = request.form['Reg']
+    return redirect(url_for("getPrediction", sex=sex, regression=regression))
 #print(sex)
 @app.route("/results", methods=["GET"])
 def getPrediction():
@@ -335,8 +342,7 @@ def getPrediction():
         #print(results['max_estimate'])
         #print(results['min_estimate'])
         #print(count)
-        return render_template("results.html", msg = userMsg, prediction = predictions[0], r2 = results['R2'], sse = results['SSE'], see = results['SEE'], maxP = results['max_estimate'], minP = results['min_estimate'] ,er =r2_values[count], esse = range_values[count])
-    else:
+return render_template("results.html", msg=userMsg, prediction=round(predictions[0], 1), r2=round(results['R2'], 4), sse=round(results['SSE'], 4), see=round(results['SEE'], 4), maxP=round(results['max_estimate'], 1), minP=round(results['min_estimate'], 1), er=round(r2_values[count], 4), esse=round(range_values[count], 4))    else:
         if sex == 'Male': #selecting correct model and data based on sex
             vert_data = vert_data_M 
             gender = 'M'
@@ -381,7 +387,6 @@ def getPrediction():
         #print("RF")
         predicted_sum_verts, r_squared, standard_errors, confidence_interval = predict_sum_verts(user_input_data, gender)
         #predicted_sum_verts = predict_sum_verts(user_input_data, sex)
-        return render_template("results.html", msg = userMsg, prediction = predicted_sum_verts, r2 = r_squared, sse =  results_rf[gender]["Mean Squared Error (Cross-Validation)"] *23, see = standard_errors,  maxP = results['max_estimate'], minP = results['min_estimate'] ,er =r2_values[count], esse = range_values[count])
-
+return render_template("results.html", msg = userMsg, prediction = predicted_sum_verts, r2 = r_squared, sse =  round(results_rf[gender]["Mean Squared Error (Cross-Validation)"]*23, 4), see = standard_errors,  maxP = results['max_estimate'], minP = results['min_estimate'] ,er =r2_values[count], esse = range_values[count])
 if __name__ == '__main__':
     app.run(debug=True)
