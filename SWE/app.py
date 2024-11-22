@@ -312,8 +312,9 @@ def getPrediction():
     r2_values = [0.6495834, 0.8036646, 0.8709024, 0.9070805, 0.9294138, 0.9448142, 0.9561731, 0.9643529, 0.9708922, 0.9759164, 0.9799633, 0.983338, 0.9861995, 0.9885503, 0.9906716, 0.9923827, 0.9939365, 0.9952556, 0.9964237, 0.9974959, 0.9984204, 0.9992389]
     for i in range (new_data_imputed.shape[1]):
         if (new_data_imputed.iloc[:, i] != 0).all() and (new_data_imputed.iloc[:, i] < min_values[vertebrae_names[i]]).all() or (new_data_imputed.iloc[:, i] > max_values[vertebrae_names[i]]).all():
-                userMsg+=(f"<br>Warning: The value for '{vertebrae_names[i]}' is out of bounds! "
-                      f"Expected range: [{min_values[vertebrae_names[i]]}, {max_values[vertebrae_names[i]]}].<br>")
+                userMsg+=(f"\n{vertebrae_names[i]}\n"
+                    f"Warning: The value for {vertebrae_names[i]} is out of bounds! "
+                    f"Expected range: [{min_values[vertebrae_names[i]]}, {max_values[vertebrae_names[i]]}].\n")
     #print(userMsg)
     if(userMsg ==""):
         userMsg = "Prediction Made Successfully"
