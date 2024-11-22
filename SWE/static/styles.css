@@ -302,8 +302,9 @@ div.scroll-container {
     padding: 10px;
     object-fit: contain;
     width: 50%;
-    margin-left: 50px;
-    margin-top: -150px;
+    margin-left: 20px;
+    margin-top: -250px;
+    height: 230px;
 }
 /*drop down selction menus*/
 .option {
@@ -320,11 +321,11 @@ div.scroll-container {
     color: white;
     font-family: Poppins;
     font-size: 20px;
-    margin-top: 50px;
     box-shadow: rgba(0,0,0,0.2) 2px 2px 2px 2px;
     outline: 0.5px outset grey;
     background-color: rgba(255, 255, 255, 0.2);
-    
+    height: 250px;
+    margin-right: 20px;
 }
 .result-box p {
     font-size: 100%;    
@@ -335,7 +336,7 @@ div.scroll-container {
 div.scroll-container img {
     padding: 15px;
     width: 60%;
-    height: 300px;
+    height: 190px;
     outline: 0.25px inset grey;
     box-shadow: rgba(0,0,0,0.2) 1px 1px 1px 1px inset;
 }
@@ -346,11 +347,12 @@ clear: both;
 }
 /* The expanding image container (positioning is needed to position the close button and the text) */
 .container {
-position: relative;
-display: none;
-background-color: black;
-padding: 10px;
-margin: 20px;
+    position: relative;
+    display: none;
+    box-shadow: rgba(0,0,0,0.2) 2px 2px 2px 2px;
+    padding: 10px;
+    margin: 20px;
+    background-color: rgba(255, 255, 255, 0.2);
 }
 /* Closable button inside the image */
 .closebtn {
