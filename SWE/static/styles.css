@@ -260,6 +260,11 @@ br {
         margin-left: 10px;
         text-decoration: none;
     }
+.image-container::after {
+    content: attr(alt); /* Use the alt attribute as the text */
+    /* Additional styling here affects how the alt text is displayed */
+    font-size: 45px;
+}
 
 /*side nav bar for about.html*/
 #content-select {
