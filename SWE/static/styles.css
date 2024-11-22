@@ -443,11 +443,10 @@ button {
     margin-top: 10px;
 }
 
-    button:hover {
-        background-color: #45a049;
-    }
-
-
+button:hover {
+    background-color: rgb(138, 120, 83);
+    color: rgb(34, 34, 34);
+}
 
 /*code for image gallery example not currently in use*/
 
