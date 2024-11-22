@@ -61,7 +61,6 @@ header {
     text-align: center;
     width: 100px;
     margin-left: 45%;
-    text-decoration: underline;
     /*font-weight: bold;*/
 }
 /*???*/
@@ -99,18 +98,13 @@ nav ul li a {
 
 /*about page formating*/
 h2 {
-    text-decoration: 1px solid white underline;
-    text-underline-offset: 5px;
     margin-left: 20px;
     font-size: 35px;
     margin-top: 5px;
     padding-top: 5px;
     padding-bottom: 10px;
 }
-label {
-    text-decoration: 1px solid white underline;
-    text-underline-offset: 5px;
-}
+
 br {
     display: block;
     margin: 10px 0;
