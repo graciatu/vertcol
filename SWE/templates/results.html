@@ -14,70 +14,72 @@
     <title></title>
 </head>
 <body>
-    <div id="head">
-        <header>Results</header>
-        <nav>
-            <ul>
-                <li><i class="fa-solid fa-circle-info"></i><a href={{ url_for('about') }}>About</a></li>
-                <li><i class="fa-solid fa-chart-line"></i><a href={{ url_for('predict') }}>Predict</a></li>
-            </ul>
-        </nav>
-    </div>
+    <div id="containAll">
+        <div id="head">
+            <header>Results</header>
+            <nav>
+                <ul>
+                    <li><i class="fa-solid fa-circle-info"></i><a href={{ url_for('about') }}>About</a></li>
+                    <li><i class="fa-solid fa-chart-line"></i><a href={{ url_for('predict') }}>Predict</a></li>
+                </ul>
+            </nav>
+        </div>
         <h1 id="warningMsg">
             {{ msg }}
         </h1>
-    <div>
-        <div class="result-box">
-            <p>
-                Expected Standard Error of Estimate (SEE): {{ esse }}<br>
-                Standard Error of Estimate (SEE): {{ see }}<br>
-                Sum of Squared Errors (SSE): {{ sse }}<br>
-                Prediction: {{ prediction }}<br>
-                Expected R² Value: {{ er }}<br>
-                Max Prediction: {{ maxP }}<br>
-                Min Prediction: {{ minP }}<br>
-                R² Value: {{ r2 }}
-                
-            </p>
-        </div>
-        <script>
-        function myFunction(imgs) {
-                var expandImg = document.getElementById("expandedImg");
-                var imgText = document.getElementById("imgtext");
-                expandImg.src = imgs.src;
-                imgText.innerHTML = imgs.alt;
-                expandImg.parentElement.style.display = "block";
-            }
-        </script>
-        <div class="scroll-container">
-            <img src="static/allVertsTable.jpg" alt="Table of average statistics based on amount of vertebrae entered." onclick="myFunction(this);" style="object-fit:scale-down;">
-            <img src="static/allVertsGraph.jpg" alt="Graph of average statistics on total vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsCtable.jpg" alt="Table of average statistics based on Cervical vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsCgraph.jpg" alt="Graph of average statistics on total Cervical vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsTtable.jpg" alt="Table of average statistics on total Thoracic vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsTgraph.jpg" alt="Graph of average statistics on total Thoracic vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsLtable.jpg" alt="Table of average statistics on total Lumbar vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsLgraph.jpg" alt="Graph of average statistics on total Lumbar vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsCTtable.jpg" alt="Table of average statistics on total Cervical and Thoracic vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsCTgraph.jpg" alt="Graph of average statistics on total Cervical and Thoracic vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsCLtable.jpg" alt="Table of average statistics on total Cervical and Lumbar vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsCLgraph.jpg" alt="Graph of average statistics on total Cervical and Lumbar vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsTLtable.jpg" alt="Table of average statistics on total Thoracic and Lumbar vertebrae entered." onclick="myFunction(this);">
-            <img src="static/vertsTLgraph.jpg" alt="Graph of average statistics on total Thoracic and Lumbar vertebrae entered." onclick="myFunction(this);">
-        </div>
+        <div>
+            <div class="result-box">
+                <p>
+                    Expected Standard Error of Estimate (SEE): {{ esse }}<br>
+                    Standard Error of Estimate (SEE): {{ see }}<br>
+                    Sum of Squared Errors (SSE): {{ sse }}<br>
+                    Prediction: {{ prediction }}<br>
+                    Expected R² Value: {{ er }}<br>
+                    Max Prediction: {{ maxP }}<br>
+                    Min Prediction: {{ minP }}<br>
+                    R² Value: {{ r2 }}
 
-        <!-- The expanding image container -->
-        <div class="container">
-            <!-- Close the image -->
-            <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+                </p>
+            </div>
+            <script>
+                function myFunction(imgs) {
+                    var expandImg = document.getElementById("expandedImg");
+                    var imgText = document.getElementById("imgtext");
+                    expandImg.src = imgs.src;
+                    imgText.innerHTML = imgs.alt;
+                    expandImg.parentElement.style.display = "block";
+                }
+            </script>
+            <div class="scroll-container">
+                <img src="static/allVertsTable.jpg" alt="Table of average statistics based on amount of vertebrae entered." onclick="myFunction(this);" style="object-fit:scale-down;">
+                <img src="static/allVertsGraph.jpg" alt="Graph of average statistics on total vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsCtable.jpg" alt="Table of average statistics based on Cervical vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsCgraph.jpg" alt="Graph of average statistics on total Cervical vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsTtable.jpg" alt="Table of average statistics on total Thoracic vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsTgraph.jpg" alt="Graph of average statistics on total Thoracic vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsLtable.jpg" alt="Table of average statistics on total Lumbar vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsLgraph.jpg" alt="Graph of average statistics on total Lumbar vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsCTtable.jpg" alt="Table of average statistics on total Cervical and Thoracic vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsCTgraph.jpg" alt="Graph of average statistics on total Cervical and Thoracic vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsCLtable.jpg" alt="Table of average statistics on total Cervical and Lumbar vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsCLgraph.jpg" alt="Graph of average statistics on total Cervical and Lumbar vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsTLtable.jpg" alt="Table of average statistics on total Thoracic and Lumbar vertebrae entered." onclick="myFunction(this);">
+                <img src="static/vertsTLgraph.jpg" alt="Graph of average statistics on total Thoracic and Lumbar vertebrae entered." onclick="myFunction(this);">
+            </div>
 
-            <img id="expandedImg">
-            <!-- Image text -->
-            <div id="imgtext"></div>
+            <!-- The expanding image container -->
+            <div class="container">
+                <!-- Close the image -->
+                <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+
+                <img id="expandedImg">
+                <!-- Image text -->
+                <div id="imgtext"></div>
+            </div>
         </div>
+        <footer>
+            <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
+        </footer>
     </div>
-     <footer>
-     <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
- </footer>
 </body>
 </html>
