@@ -458,9 +458,14 @@ text-underline-offset: 5px;*/
 #warningMsg {
     color: rgb(243, 16, 16);
     background-color: rgba(0, 0, 0, 0.2); /* Low opacity black background (20% opacity) */
-    padding: 15px;
+    padding: 5px;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    white-space: pre-wrap;
+    max-width: 700px; /* Example max width */
+    margin: 0 auto; /* Center the warning message */
+    margin-bottom: 20px; /* Add space below this element */
 }
 /*side nav bar for about.html*/
 #content-select {
