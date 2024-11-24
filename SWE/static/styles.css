@@ -335,6 +335,7 @@ text-underline-offset: 5px;*/
     height: 300px;
     padding-left: 10px;
     padding-right: 10px;
+    scrollbar-color: rgb(180, 156, 109) rgb(0, 0, 0, 0.2);
 }
 .scroll-container img {
     padding: 2px;
@@ -459,7 +460,7 @@ text-underline-offset: 5px;*/
 }
 /*code for image gallery example not currently in use*/
 #warningMsg {
-    color: rgb(243, 16, 16);
+    color: white;
     background-color: rgba(0, 0, 0, 0.2); /* Low opacity black background (20% opacity) */
     padding: 5px;
     border-radius: 5px;
