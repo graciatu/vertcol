@@ -346,7 +346,14 @@ text-underline-offset: 5px;*/
     box-shadow: rgba(0,0,0,0.3) 2px 2px 2px 2px;
     outline: 0.5px outset grey;
     background-color: rgba(255, 255, 255, 0.3);
-    }
+    transition: filter 0.3s ease, transform 0.3s ease;
+    cursor: pointer; /* Indicates the image is clickable */
+}
+  
+.scroll-container img:hover {
+    filter: brightness(0.8) hue-rotate(20deg);
+    transform: scale(1.025); /* Slight zoom effect */
+}
 /*drop down selction menus*/
 .option {
     padding: 10px;
