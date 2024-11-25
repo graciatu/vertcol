@@ -11,7 +11,7 @@
     <meta charset="utf-8" />
 
     <link rel="stylesheet" href={{url_for('static', filename='styles.css') }} />
-    <title></title>
+    <title>Results</title>
 </head>
 <body>
     <div id="containAll">
@@ -24,8 +24,15 @@
                 </ul>
             </nav>
         </div>
-        <h1 id="warningMsg">{{ msg }}</h1>
+        <h1 id="warningMsg">
+            {{ msg }}
+        </h1>
         <div class="content-results">
+            <br />
+            <div class="title-results">
+                <h2>Your Results:</h2>
+
+            </div>
             <div class="result-box">
                 <p>
                     <b>Expected Standard Error of Estimate (SEE):</b> {{ esse }}<br>
