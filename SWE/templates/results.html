@@ -29,7 +29,7 @@
         </h1>
         <div class="content-results">
             <br />
-            <div class="title-results">
+            <div class="title-results" id="titlebox" style="margin-bottom: 90px">
                 <h2>Your Results:</h2>
 
             </div>
@@ -52,6 +52,7 @@
                     var imgText = document.getElementById("imgtext");
                     expandImg.src = imgs.src;
                     imgText.innerHTML = imgs.alt;
+                    document.getElementById("titlebox").style.marginBottom = "-25px";
                     expandImg.parentElement.style.display = "block";
                 }
             </script>
@@ -75,7 +76,7 @@
             <!-- The expanding image container -->
             <div class="container">
                 <!-- Close the image -->
-                <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+                <span onclick="this.parentElement.style.display = 'none'" class="closebtn">&times;</span>
 
                 <img id="expandedImg">
                 <!-- Image text -->
@@ -85,6 +86,12 @@
         <footer>
             <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
         </footer>
+        <script>
+            document.querySelector('.closebtn').addEventListener('click', function () {
+                // Reset the margin-bottom of the title box
+                document.getElementById('titlebox').style.marginBottom = '90px';
+            });
+        </script>
     </div>
 </body>
 </html>
