@@ -187,7 +187,7 @@ button:hover {
     background-color: rgba(255, 255, 255, 0.2);
     max-width: 100%;
     border-radius: 5px;
-    margin-bottom: -25px;
+    /*margin-bottom: -25px;*/
     margin-top: -25px;
 }
 .title-results h2 {
@@ -236,7 +236,7 @@ button:hover {
     background-color: rgb(0, 0, 0, 0.2);
     outline: 0.5px inset grey;
     box-shadow: rgba(0,0,0,0.2) 2px 2px 2px 2px inset;
-    min-height: 680px;
+    min-height: 600px;
 }
 /*box to show content in about page*/
 .content {
