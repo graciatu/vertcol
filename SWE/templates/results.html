@@ -29,8 +29,7 @@
         </h1>
         <div class="content-results">
             <br />
-            <div class="title-results" id="titlebox" style="margin-bottom: 90px">
-                <h2>Your Results:</h2>
+            <div  id="titlebox" style="margin-bottom: 90px">
 
             </div>
             <div class="result-box">
@@ -46,7 +45,6 @@
 
                 </p>
             </div>
-            
             <div class="scroll-container">
                 <img src="static/allVertsTable.jpg" alt="Table of average statistics based on amount of vertebrae entered." onclick="myFunction(this);" style="object-fit:scale-down;">
                 <img src="static/allVertsGraph.jpg" alt="Graph of average statistics on total vertebrae entered." onclick="myFunction(this);">
@@ -78,29 +76,27 @@
             <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
         </footer>
         <script>
-            document.querySelector('.closebtn').addEventListener('click', function () {
-                // Reset the margin-bottom of the title box
-                document.getElementById('titlebox').style.marginBottom = '90px';
+            document.querySelector('.closebtn').addEventListener('click', function() {
+            // Reset the margin-bottom of the title box
+            document.getElementById('titlebox').style.marginBottom = '100px';
             });
+            function myFunction(imgs) {
+                const expandImg = document.getElementById("expandedImg");
+                const imgText = document.getElementById("imgtext");
+
+                expandImg.src = imgs.src;
+                imgText.innerHTML = imgs.alt;
+                document.getElementById("titlebox").style.marginBottom = "-50px";
+                expandImg.parentElement.style.display = "block";
+
+                // Adjust font size for a specific image
+                if (imgs.src.includes("static/vertsLtable.jpg") || imgs.src.includes("static/vertsCtable.jpg")) {
+                    imgText.style.fontSize = "20px"; // Smaller font size for this image
+                } else {
+                    imgText.style.fontSize = "40px"; // Default font size
+                }
+            }
         </script>
     </div>
-    <script>
-
-        function myFunction(imgs) {
-            const expandImg = document.getElementById("expandedImg");
-            const imgText = document.getElementById("imgtext");
-    
-            expandImg.src = imgs.src;
-            imgText.innerHTML = imgs.alt;
-            expandImg.parentElement.style.display = "block";
-    
-            // Adjust font size for a specific image
-            if (imgs.src.includes("static/vertsLtable.jpg") || imgs.src.includes("static/vertsCtable.jpg")) {
-                imgText.style.fontSize = "20px"; // Smaller font size for this image
-            } else {
-                imgText.style.fontSize = "40px"; // Default font size
-            }
-        }
-    </script>
 </body>
 </html>
