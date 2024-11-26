@@ -550,10 +550,10 @@ text-underline-offset: 5px;*/
 #colorbox {
     box-shadow: rgba(0,0,0,0.2) 2px 2px 2px 2px;
     outline: 0.5px outset grey;
-    background-image: url('static/linkBackground.jpg');
-    background-size: cover; /* Ensures the image covers the entire screen */
-    background-repeat: no-repeat; /* Prevents the image from repeating */
-    background-position: center; /* Centers the image */
+    background-color: rgba(255, 255, 255, 0.2);
+    /*background-size: cover;*/ /* Ensures the image covers the entire screen */
+    /*background-repeat: no-repeat;*/ /* Prevents the image from repeating */
+    /*background-position: center;*/ /* Centers the image */
     height: 557px;
     width: 155px;
     margin-left: 10px;
