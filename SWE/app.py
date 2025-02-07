@@ -40,7 +40,6 @@ y_combined = data_combined['Sum_Verts']
 X_combined = data_combined.drop(columns=['Sum_Verts', 'ID', 'Age_mean', 'Sex'])
 
 
-
 for gender in genders:
     y = data[data['Sex'] == gender]['Sum_Verts']
     X = data[data['Sex'] == gender].drop(columns=['Sum_Verts', 'ID', 'Age_mean', 'Sex'])
