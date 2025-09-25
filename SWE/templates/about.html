@@ -21,18 +21,18 @@
             <nav>
                 <ul>
                     <li ><i class="fa-solid fa-circle-info"></i><a href={{ url_for('about') }}>About Page</a></li>
-                    <li  ><i class="fa-solid fa-chart-line"></i><a href={{ url_for('predict') }}>Predict</a></li>
+                    <li  ><i class="fa-solid fa-chart-line"></i><a href={{ url_for('predict') }}>Input</a></li>
                 </ul>
             </nav>
         </div>
         <script>
             function selectContent(name) {
 
-                if (name === 'measuring') {
-                    document.getElementById('contact').style.display = "none";
+                if (name === 'Measurement') {
+                    document.getElementById('Contact').style.display = "none";
                 }
                 else {
-                    document.getElementById('measuring').style.display = "none";
+                    document.getElementById('Measurement').style.display = "none";
                 }
                 document.getElementById(name).style.display = "";
 
@@ -42,8 +42,8 @@
         </script>
         <div id="content-select">
             <ul>
-                <li id="contentlink" onclick="selectContent('measuring')">Measuring</li>
-                <li id="contentlink" onclick="selectContent('contact')">Contact</li>
+                <li id="contentlink" onclick="selectContent('Measurement')">Measurement</li>
+                <li id="contentlink" onclick="selectContent('Contact')">Contact</li>
             </ul>
             <div id="colorbox">
                 <!i plan on having the image just be here. I want it to be more muted too>
@@ -56,23 +56,23 @@
         </div>
 
 
-        <div class="content" id="measuring">
+        <div class="content" id="Measurement">
             <div class="title">
-                <h2>Measuring Information:</h2>
+                <h2>Measurement Instruction:</h2>
                 <p id="small-text"> <i>Individual vertebral height is measured using a sliding caliper as described in Raxter et al. (2006, p.382).</i> </p>
             </div>
 
             <img id="left" src="static/Picture1empty.png" style="max-width: 45%;" />
-            <div class="imgcaption1"><p style="text-decoration: underline 2px;"><b>C2 (second cervical vertebra):</b></p> <p>The most superior point of the odontoid process (dens) to the most inferior point of the anterior inferior rim of the vertebral body.</p></div>
+            <div class="imgcaption1"><p style="text-decoration: underline 2px;"><b>C2 (2nd cervical vertebra):</b></p> <p>The most superior point of the odontoid process (dens) to the most inferior point of the anterior inferior rim of the vertebral body.</p></div>
 
             <img id="right" src="static/Picture2empty.png" style="max-width: 45%;" />
             <div class="imgcaption2"><p style="text-decoration: underline 2px;"><b>C3 - C7 (3rd-7th cervical vertebrae):</b></p> <p>The maximum height of the vertebral body, measured in its anterior third, medial to the superiorly curving edges of the centrum.</p></div>
 
             <img id="left" src="static/Picture3empty.png" style="max-width: 45%;" />
-            <div class="imgcaption1"><p style="text-decoration: underline 2px;"><b>T1 - T12 (thoracic vertebrae): </b></p> <p>The maximum height of the vertebral body, anterior to the rib articular facets and pedicles.</p></div>
+            <div class="imgcaption1"><p style="text-decoration: underline 2px;"><b>T1 - T12 (Thoracic vertebrae): </b></p> <p>The maximum height of the vertebral body, anterior to the rib articular facets and pedicles.</p></div>
 
             <img id="right" src="static/Picture4empty.png" style="max-width: 45%;" />
-            <div class="imgcaption2"><p style="text-decoration: underline 2px;"><b>L1 - L5 (lumbar vertebrae): </b></p> <p>The maximum height of the vertebral body, anterior to the pedicles, not including any swelling of the centrum due to the pedicles.</p></div>
+            <div class="imgcaption2"><p style="text-decoration: underline 2px;"><b>L1 - L5 (Lumbar vertebrae): </b></p> <p>The maximum height of the vertebral body, anterior to the pedicles, not including any swelling of the centrum due to the pedicles.</p></div>
         </div>
 
         <div class="content" id="contact" style="display: none;">
@@ -92,7 +92,7 @@
         </div>
        
         <footer>
-            <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
+            <p>© 2025 Vertebral Column Height Estimation. All rights reserved.</p>
         </footer>
     </div>
 </body>

@@ -21,7 +21,7 @@
             <nav>
                 <ul>
                     <li><i class="fa-solid fa-circle-info"></i><a href={{ url_for('about') }}>About Page</a></li>
-                    <li><i class="fa-solid fa-chart-line"></i><a href={{ url_for('predict') }}>Predict</a></li>
+                    <li><i class="fa-solid fa-chart-line"></i><a href={{ url_for('predict') }}>Input</a></li>
                 </ul>
             </nav>
         </div>
@@ -35,16 +35,16 @@
         <div class="index-content" style="margin-top: 0px;">
             <br>
             <div class="title-predict" id="predict">
-                <h2>Enter Your Known Vertebra Measurements Below:</h2>
-                <p id="small-text"> <i>Leave the appropriate box blank for any missing vertebra measurements.</i> </p>
+                <h2>Enter Known Vertebra Heights Below:</h2>
+                <p id="small-text"> <i>Leave the boxes of missing vertebrae blank.</i> </p>
 
             </div>
             <form action="{{ url_for('input') }}" method="post">
                 <div id="colorbox3">
-                    <label for="Reg">Select Regression Type:</label>
+                    <label for="Reg">Select Statistical Model:</label>
                     <select name="Reg" required>
-                        <option value="" disabled selected>Select a type</option>
-                        <option value="Linear">Linear</option>
+                        <option value="" disabled selected>Select a model</option>
+                        <option value="Linear Regression">Linear</option>
                         <option value="Random Forest">Random Forest</option>
                     </select>
                 </div>
@@ -54,7 +54,7 @@
                         <option value="" disabled selected>Select a type</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
-                        <option value="Pooled">Pooled</option>
+                        <option value="Unknown">Pooled</option>
                     </select>
                 </div>
                 <div id="colorbox3">
@@ -128,7 +128,7 @@
         </div>
     </div>
     <footer>
-        <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
+        <p>© 2025 Vertebral Column Height Estimation. All rights reserved.</p>
     </footer>
 </body>
 </html>

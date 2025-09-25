@@ -1,394 +1,365 @@
-from flask import Flask, render_template, redirect, request, url_for
-import pandas as pd
-import numpy as np
-import joblib
+import os
+import uuid
 import random
-import statsmodels.api as sm
+import numpy as np
+import pandas as pd
+from flask import Flask, render_template, redirect, request, url_for
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.model_selection import train_test_split, cross_val_score, KFold
-from sklearn.metrics import make_scorer, mean_squared_error, r2_score
-from itertools import combinations
-from scipy import stats
+from sklearn.model_selection import KFold
+from sklearn.metrics import r2_score, mean_squared_error
+import statsmodels.api as sm
+import matplotlib
+matplotlib.use("Agg")  # 서버에서 GUI 없이 렌더
+import matplotlib.pyplot as plt
 
-app = Flask(__name__, template_folder="templates")
+# -----------------------------
+# Flask & data
+# -----------------------------
+app = Flask(__name__, template_folder="templates", static_folder="static")
+
+# ensure plots dir
+PLOTS_DIR = os.path.join(app.static_folder, "plots")
+os.makedirs(PLOTS_DIR, exist_ok=True)
+
+# Load data
 verts = pd.read_excel("verts.xlsx")
-# add see and max min prediction
-data = verts.iloc[:-5]
+verts.columns = [c.strip() for c in verts.columns]
 
-vert_data_M = verts[verts["Sex"] == 'M']
-vert_data_M = vert_data_M.iloc[0:vert_data_M.shape[0], 3:27]
+VERTE_NAMES = ["C2","C3","C4","C5","C6","C7",
+               "T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12",
+               "L1","L2","L3","L4","L5"]
 
-vert_data_F = verts[verts["Sex"] == 'F']
-vert_data_F = vert_data_F.iloc[0:vert_data_F.shape[0], 3:27]
+# Sum_Verts 보장
+if "Sum_Verts" not in verts.columns:
+    missing = [v for v in VERTE_NAMES if v not in verts.columns]
+    if missing:
+        raise ValueError(f"Missing columns in verts.xlsx: {missing}")
+    verts["Sum_Verts"] = verts[VERTE_NAMES].sum(axis=1)
 
-vert_data_A = verts.iloc[0:153, 3:27]
+# Sex 보장
+if "Sex" not in verts.columns:
+    verts["Sex"] = "UD"
 
-################################################################
-genders = ['M', 'F', 'UD']
+# -----------------------------
+# Helpers
+# -----------------------------
+def sex_key_from_form(form_value: str) -> str:
+    s = (form_value or "").strip().lower()
+    if s.startswith("male"):
+        return "M"
+    if s.startswith("female"):
+        return "F"
+    return "UD"
 
-results_rf = {}
-r2_results = {}
-se_results = {}
+def get_sex_filtered_df(sex_key: str) -> pd.DataFrame:
+    if sex_key in ("M","F","UD"):
+        df = verts[verts["Sex"] == sex_key]
+        if len(df) == 0 and sex_key == "UD":
+            df = verts.copy()
+        return df.copy()
+    return verts.copy()
 
-mse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
-#r2_scorer = make_scorer(r2_score)
+def build_training_df(df: pd.DataFrame, predictors: list) -> pd.DataFrame:
+    cols = ["Sum_Verts"] + predictors
+    return df.loc[:, cols].dropna()
 
-data_combined = pd.concat([data[data['Sex'] == gender] for gender in genders])
+def safe_k(n: int, k_default: int = 5) -> int:
+    if n < 4:
+        return 0
+    return min(k_default, max(2, min(n, n // 2)))
 
-y_combined = data_combined['Sum_Verts']
-X_combined = data_combined.drop(columns=['Sum_Verts', 'ID', 'Age_mean', 'Sex'])
+def cv_run(train_df: pd.DataFrame, predictors: list, method: str = "ols", k: int = 5, seed: int = 42):
+    n = len(train_df)
+    k_eff = safe_k(n, k_default=k)
+    if k_eff < 2:
+        return {"summary": {"k": None, "R2_mean": np.nan, "RMSE_mean": np.nan},
+                "details": []}
 
+    kf = KFold(n_splits=k_eff, shuffle=True, random_state=seed)
+    r2_list, rmse_list = [], []
 
-for gender in genders:
-    y = data[data['Sex'] == gender]['Sum_Verts']
-    X = data[data['Sex'] == gender].drop(columns=['Sum_Verts', 'ID', 'Age_mean', 'Sex'])
-    
-    rf = RandomForestRegressor(n_estimators=100, random_state=42)
-    kf = KFold(n_splits=5, shuffle=True, random_state=42)
-    mse_scores = cross_val_score(rf, X, y, cv=kf, scoring=mse_scorer)
+    X_all = train_df[predictors]
+    y_all = train_df["Sum_Verts"].values
 
-    rf.fit(X, y)
+    for tr_idx, te_idx in kf.split(X_all):
+        X_tr, X_te = X_all.iloc[tr_idx], X_all.iloc[te_idx]
+        y_tr, y_te = y_all[tr_idx], y_all[te_idx]
 
-    results_rf[gender] = {
-        "Mean Squared Error (Cross-Validation)": -np.mean(mse_scores)}
-    
-    model_filename = f"random_forest_{gender}.joblib"
-    joblib.dump(rf, model_filename)
-    
-    model_filename = f"random_forest_{gender}.joblib"
-    joblib.dump(rf, model_filename)
+        if method == "ols":
+            X_tr_ = sm.add_constant(X_tr, has_constant="add")
+            X_te_ = sm.add_constant(X_te, has_constant="add")
+            fit = sm.OLS(y_tr, X_tr_).fit()
+            y_hat = fit.predict(X_te_)
+        else:
+            rf = RandomForestRegressor(n_estimators=500, random_state=seed)
+            rf.fit(X_tr, y_tr)
+            y_hat = rf.predict(X_te)
 
-spine_features = X_combined.columns.tolist()
-for num_features in range(1, len(spine_features) + 1):
-    r2_values = []
-    se_values = []
+        r2 = r2_score(y_te, y_hat)
+        rmse = mean_squared_error(y_te, y_hat, squared=False)
+        r2_list.append(r2)
+        rmse_list.append(rmse)
 
-    for _ in range(5):  # Run 10 times
-        sampled_features = random.sample(spine_features, num_features)
-        rf = RandomForestRegressor(n_estimators=100, random_state=42)
-        
-        rf.fit(X_combined[sampled_features], y_combined)
-        predictions = rf.predict(X_combined[sampled_features])
-        
-        r2_value = r2_score(y_combined, predictions)
-        r2_values.append(r2_value)
-        
-        se = np.std(predictions) / np.sqrt(len(predictions))  # Standard Error formula
-        se_values.append(se)
-
-    # Store the minimum R² and SE for this number of features
-    r2_results[num_features] = np.min(r2_values)
-    se_results[num_features] = np.min(se_values)
-
-joblib.dump(r2_results, 'r2_results.joblib')
-joblib.dump(se_results, 'se_results.joblib')
-
-#rf_male = joblib.load('random_forest_M.joblib')
-#rf_female = joblib.load('random_forest_F.joblib')
-#rf_unknown = joblib.load('random_forest_UD.joblib')
-
-
-numeric_columns = data.select_dtypes(include=[np.number]).columns
-data_numeric = data[numeric_columns]
-
-### save the mean value
-mean_values_by_gender = data.groupby('Sex')[numeric_columns].mean()
-overall_mean = data[numeric_columns].mean()
-mean_values_dict = pd.DataFrame({
-    'M': mean_values_by_gender.loc['M'],
-    'F': mean_values_by_gender.loc['F'],
-    'UD': overall_mean    ####### Here we use the mean of overall to fill the nan value for the UD gender.
-})
-mean_values_dict = mean_values_dict.T
-
-joblib.dump(mean_values_dict, "mean_values.joblib")
-
-mean_values_by_gender = joblib.load("mean_values.joblib")
-
-
-
-mean_values = X_combined.mean()
-std_values = X_combined.std()
-max_values = round((mean_values + 2 * std_values),2)
-min_values = round((mean_values - 2 * std_values),2)
-
-
-def predict_sum_verts(user_input, user_gender):
-    if user_gender not in ['M', 'F', 'UD']:
-        raise ValueError("Invalid gender! Please input 'M', 'F', or 'UD'.")
-#####################################################################################################################
-    ##### If you need to contorl the input to have different decimal places, please use this part
-    
-    # for key in user_input:
-    #     if not pd.isnull(user_input[key]): 
-    #         user_input[key] = round(float(user_input[key]), 2)     #### Convert input into two decimal palces.
-#####################################################################################################################
-    
-    #non_null_features = [key for key, value in user_input.items() if (value != 0).bool()]
-
-    #num_non_null_features = len(non_null_features)
-    num_non_null_features = 24
-   
-    #if num_non_null_features < 14:
-    #    print("Warning: Insufficient data. Please provide at least 14 non-null features for accurate prediction.")
-    
-    gender_means = mean_values_by_gender.loc[user_gender]
-    
-    spine_features = ['C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6',
-                      'T7', 'T8', 'T9', 'T10', 'T11', 'T12', 'L1', 'L2', 'L3', 'L4', 'L5']
-
-    for feature in spine_features:
-        #print(user_input[feature][0])
-        if feature not in user_input or int(user_input[feature][0]) == 0:
-            #print("Flag")
-            num_non_null_features -=1
-            user_input[feature] = gender_means[feature]
-        #else:
-        #    if (user_input[feature] < min_values[feature]).all() or (user_input[feature] > max_values[feature]).all():
-        #        print(f"Warning: The value for '{feature}' is out of bounds! "
-        #              f"Expected range: [{min_values[feature]}, {max_values[feature]}], "
-        #              f"but got: {user_input[feature]}.")
-    #print(num_non_null_features)
-    input_df = pd.DataFrame([user_input], columns=spine_features)
-
-    model_filename = f"random_forest_{user_gender}.joblib"
-    model = joblib.load(model_filename)
-
-    prediction = model.predict(input_df)
-
-    # R² and SE
-    r_squared = r2_results.get(num_non_null_features, None)
-    se = se_results.get(num_non_null_features, None)
-
-    predictions = model.predict(X_combined[spine_features])  
-    std_dev = np.std(predictions)
-    critical_value = stats.t.ppf(0.975, df=len(predictions) - 1)
-    margin_of_error = critical_value * (std_dev / np.sqrt(len(predictions)))
-
-    lower_bound = prediction[0] - margin_of_error
-    upper_bound = prediction[0] + margin_of_error
-
-    return round(prediction[0], 1), round(r_squared,4), round(se,4), (round(lower_bound, 1), round(upper_bound, 1))
-
-
-
-
-all_mse = []
-
-
-################################################################
-
-
-def total_sampling(data, t):
-    # Ensure t is in range
-    if t > 23 or t < 1:
-        raise ValueError("Sample size t must be between 1 and 23.")
-    
-    # Sampling number of targets
-    sampled_columns = random.sample(range(23), t)
-    vert_sampled = data.iloc[:, sampled_columns]
-    
-    # Everything but sum
-    vert_sampled_counter = data.iloc[:, 23:24]
-    
-    vert_combined = pd.concat([vert_sampled.reset_index(drop=True), vert_sampled_counter.reset_index(drop=True)], axis=1)
-    vert_combined.columns = list(vert_combined.columns[:-1]) + ["Sum_Verts"]
-
-    # Train model
-    X = vert_combined.iloc[:, :-1]  # All but the last column
-    y = vert_combined["Sum_Verts"]
-    X = sm.add_constant(X)  # Add a constant for intercept
-    lm_model = sm.OLS(y, X).fit() #ordinary least squares methods for regression
-    
-    predictions = lm_model.predict(X)
-    residuals = vert_combined["Sum_Verts"] - predictions
-    vert_sampling_sse = np.sum(residuals**2)  # Sum of Squared Errors
-    vert_sampling_r2 = lm_model.rsquared_adj
-    
-    n = len(y)  # Number of observations
-    p = len(lm_model.params)  # Number of parameters (including intercept)
-    see = np.sqrt(vert_sampling_sse / (n - p))
-
-    max_estimate = np.max(predictions)
-    min_estimate = np.min(predictions)
-    vertebrae_names = ["C2", "C3", "C4", "C5", "C6", "C7",
-                       "T1", "T2", "T3", "T4", "T5", "T6", "T7", 
-                       "T8", "T9", "T10", "T11", "T12", 
-                       "L1", "L2", "L3", "L4", "L5"]
-    
-    variable_set = [1 if name in vert_combined.columns else 0 for name in vertebrae_names]
-    # Return model and other stats
     return {
-        "estimate" : predictions.mean(), 
-        "model": lm_model,
-        "SSE": vert_sampling_sse,
-        "R2": vert_sampling_r2,
-        "SEE": see,
-        "max_estimate": max_estimate,
-        "min_estimate": min_estimate,
-        "variable_set": variable_set
+        "summary": {
+            "k": k_eff,
+            "R2_mean": float(np.nanmean(r2_list)),
+            "R2_sd": float(np.nanstd(r2_list, ddof=1)) if len(r2_list) > 1 else np.nan,
+            "RMSE_mean": float(np.nanmean(rmse_list)),
+            "RMSE_sd": float(np.nanstd(rmse_list, ddof=1)) if len(rmse_list) > 1 else np.nan
+        },
+        "details": [{"fold": i+1, "R2": r2_list[i], "RMSE": rmse_list[i]} for i in range(len(r2_list))]
     }
 
-results_A = total_sampling(vert_data_A, t=10)
-results_F = total_sampling(vert_data_F, t=10)
-results_M = total_sampling(vert_data_M, t=10)
+def fit_and_predict(user_values: dict, sex_key: str, method: str = "ols", k: int = 5, seed: int = 42):
+    """
+    user_values: {"C2": 34.2, "T1": 28.4, ...}  (0/빈값 제외한 실제 입력만 포함)
+    """
+    use_vars = [v for v in user_values.keys() if v in VERTE_NAMES and pd.notnull(user_values[v]) and float(user_values[v]) != 0]
+    if len(use_vars) == 0:
+        raise ValueError("No valid vertebrae provided by user.")
 
-vertebrae_names = ["C2", "C3", "C4", "C5", "C6", "C7",
-                    "T1", "T2", "T3", "T4", "T5", "T6", "T7", 
-                    "T8", "T9", "T10", "T11", "T12", 
-                    "L1", "L2", "L3", "L4", "L5"] 
-new_data = vert_data_A.iloc[0, :23].to_frame().T  # Sample new data
+    df_sex = get_sex_filtered_df(sex_key)
+    train_df = build_training_df(df_sex, use_vars)
+    if len(train_df) < 4:
+        raise ValueError(f"Too few rows for training after filtering by sex={sex_key} and predictors={use_vars}")
 
+    # CV
+    cv = cv_run(train_df, use_vars, method=method, k=k, seed=seed)
 
+    # Final fit
+    X = train_df[use_vars]
+    y = train_df["Sum_Verts"].values
 
+    if method == "ols":
+        X_ = sm.add_constant(X, has_constant="add")
+        fit = sm.OLS(y, X_).fit()
+        x_user = pd.DataFrame([user_values])[use_vars]
+        x_user_ = sm.add_constant(x_user, has_constant="add")
+        pred = float(fit.get_prediction(x_user_).predicted_mean[0])
 
-vertices = []
-#new_data = pd.DataFrame([0]*23).transpose()
-#render_template("predict.html")
+        # 95% PI (obs)
+        pred_res = fit.get_prediction(x_user_).summary_frame(alpha=0.05)
+        pi_lower = float(pred_res["obs_ci_lower"].iloc[0])
+        pi_upper = float(pred_res["obs_ci_upper"].iloc[0])
+
+    else:
+        rf = RandomForestRegressor(n_estimators=500, random_state=seed)
+        rf.fit(X, y)
+        x_user = pd.DataFrame([user_values])[use_vars]
+        pred = float(rf.predict(x_user)[0])
+        tr_preds = rf.predict(X)
+        se = float(np.std(tr_preds, ddof=1) / np.sqrt(len(tr_preds)))
+        tcrit = 1.96
+        pi_lower = pred - tcrit * se
+        pi_upper = pred + tcrit * se
+        fit = rf
+
+    return {
+        "predictors": use_vars,
+        "prediction": pred,
+        "pi_lower": pi_lower,
+        "pi_upper": pi_upper,
+        "cv": cv,
+        "model": fit,
+        "train_n": len(train_df)
+    }
+
+def random_feature_benchmark_fixed(user_values: dict, sex_key: str, method: str = "ols",
+                                   trials: int = 1000, k: int = 5, seed: int = 2025):
+    """p = #user predictors. For each trial, sample p random features, run CV, collect R2/RMSE."""
+    p = len([v for v in user_values if v in VERTE_NAMES and float(user_values[v]) != 0])
+    if p < 1:
+        return {"summary": {}, "details": pd.DataFrame()}
+
+    df_sex = get_sex_filtered_df(sex_key)
+    all_vars = [v for v in VERTE_NAMES if v in df_sex.columns]
+
+    r2_means, rmse_means = [], []
+    rng = random.Random(seed)
+
+    for t in range(trials):
+        feats = rng.sample(all_vars, k=p)
+        train_df = build_training_df(df_sex, feats)
+        if len(train_df) < 4:
+            r2_means.append(np.nan); rmse_means.append(np.nan); continue
+        cv = cv_run(train_df, feats, method=method, k=k, seed=seed + t)
+        r2_means.append(cv["summary"]["R2_mean"])
+        rmse_means.append(cv["summary"]["RMSE_mean"])
+
+    details = pd.DataFrame({"trial": np.arange(1, trials+1),
+                            "R2_mean": r2_means,
+                            "RMSE_mean": rmse_means})
+    summary = {
+        "p": p,
+        "trials": trials,
+        "valid_trials": int(np.sum(np.isfinite(details["R2_mean"]) & np.isfinite(details["RMSE_mean"]))),
+        "R2_avg": float(np.nanmean(details["R2_mean"])),
+        "R2_sd": float(np.nanstd(details["R2_mean"], ddof=1)),
+        "RMSE_avg": float(np.nanmean(details["RMSE_mean"])),
+        "RMSE_sd": float(np.nanstd(details["RMSE_mean"], ddof=1)),
+    }
+    return {"summary": summary, "details": details}
+
+# -----------------------------
+# Plot helpers
+# -----------------------------
+def save_cv_boxplots(cv_details: list, title_prefix: str = "CV"):
+    if not cv_details:
+        return None
+    r2_vals = [d["R2"] for d in cv_details if d["R2"] is not None]
+    rmse_vals = [d["RMSE"] for d in cv_details if d["RMSE"] is not None]
+    if len(r2_vals) == 0 or len(rmse_vals) == 0:
+        return None
+
+    fig, axes = plt.subplots(1, 2, figsize=(10,4))
+    axes[0].boxplot(r2_vals, vert=True)
+    axes[0].set_title(f"{title_prefix} R²"); axes[0].set_ylabel("R²")
+
+    axes[1].boxplot(rmse_vals, vert=True)
+    axes[1].set_title(f"{title_prefix} RMSE"); axes[1].set_ylabel("RMSE")
+
+    fname = f"cv_{uuid.uuid4().hex}.png"
+    path = os.path.join(PLOTS_DIR, fname)
+    fig.tight_layout(); fig.savefig(path, dpi=150); plt.close(fig)
+    return url_for("static", filename=f"plots/{fname}")
+
+def save_benchmark_histograms(bench_df: pd.DataFrame):
+    if bench_df is None or bench_df.empty:
+        return None
+
+    fig, axes = plt.subplots(1, 2, figsize=(12,4))
+
+    # RMSE
+    rmse_vals = bench_df["RMSE_mean"].dropna().values
+    axes[0].hist(rmse_vals, bins=30, edgecolor="black")
+    axes[0].axvline(np.mean(rmse_vals), linestyle="--", color="red", linewidth=1.5)
+    axes[0].set_title("RMSE distribution (random-feature 1000 trials)")
+    axes[0].set_xlabel("RMSE"); axes[0].set_ylabel("Count")
+
+    # R2
+    r2_vals = bench_df["R2_mean"].dropna().values
+    axes[1].hist(r2_vals, bins=30, edgecolor="black")
+    axes[1].axvline(np.mean(r2_vals), linestyle="--", color="red", linewidth=1.5)
+    axes[1].set_title("R² distribution (random-feature 1000 trials)")
+    axes[1].set_xlabel("R²"); axes[1].set_ylabel("Count")
+
+    fname = f"bench_{uuid.uuid4().hex}.png"
+    path = os.path.join(PLOTS_DIR, fname)
+    fig.tight_layout(); fig.savefig(path, dpi=150); plt.close(fig)
+    return url_for("static", filename=f"plots/{fname}")
+
+# -----------------------------
+# Routes
+# -----------------------------
 @app.route("/")
 def predict():
     cervical = ["C2", "C3", "C4", "C5", "C6", "C7"]
     thoracic = ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"]
     lumbar = ["L1", "L2", "L3", "L4", "L5"]
-    
     return render_template("predict.html", cervical=cervical, thoracic=thoracic, lumbar=lumbar)
 
-#render_template("about.html")
 @app.route("/about")
 def about():
     return render_template("about.html")
 
+# simple in-memory store for one hop
+_USER_STORE = {}
+
 @app.route("/input", methods=["POST"])
 def input():
-    vertices = []
-    sex = ''
-    regression = ''
-    vertices.append(request.form['Vertebrae'])
-    vertices.append(request.form['Vertebrae2'])
-    vertices.append(request.form['Vertebrae3'])
-    vertices.append(request.form['Vertebrae4'])
-    vertices.append(request.form['Vertebrae5'])
-    vertices.append(request.form['Vertebrae6'])
-    vertices.append(request.form['Vertebrae7'])
-    vertices.append(request.form['Vertebrae8'])
-    vertices.append(request.form['Vertebrae9'])
-    vertices.append(request.form['Vertebrae10'])
-    vertices.append(request.form['Vertebrae11'])
-    vertices.append(request.form['Vertebrae12'])
-    vertices.append(request.form['Vertebrae13'])
-    vertices.append(request.form['Vertebrae14'])
-    vertices.append(request.form['Vertebrae15'])
-    vertices.append(request.form['Vertebrae16'])
-    vertices.append(request.form['Vertebrae17'])
-    vertices.append(request.form['Vertebrae18'])
-    vertices.append(request.form['Vertebrae19'])
-    vertices.append(request.form['Vertebrae20'])
-    vertices.append(request.form['Vertebrae21'])
-    vertices.append(request.form['Vertebrae22'])
-    vertices.append(request.form['Vertebrae23'])
-    for i in range(23):
-        if vertices[i] == '':
-            vertices[i]=0
-        new_data.iloc[:,i] = float(vertices[i])
-    
-    sex = request.form['Sex']
-    regression = request.form['Reg']
-    return redirect(url_for("getPrediction", sex=sex, regression=regression))
-#print(sex)
+    # gather up to 23 vertebrae
+    vals = []
+    for i in range(1, 24):
+        v = request.form.get(f"Vertebrae{i}", "").strip()
+        vals.append(v)
+
+    # map to dict with names
+    user_values = {}
+    for idx, name in enumerate(VERTE_NAMES):
+        try:
+            val = float(vals[idx]) if vals[idx] != "" else 0.0
+        except:
+            val = 0.0
+        if val != 0.0:
+            user_values[name] = val
+
+    sex_form = request.form.get("Sex", "Unknown")
+    sex_key = sex_key_from_form(sex_form)
+
+    reg_form = request.form.get("Reg", "Linear")
+    method = "ols" if reg_form.lower().startswith("linear") else "rf"
+
+    token = uuid.uuid4().hex
+    _USER_STORE[token] = {"user_values": user_values, "sex_key": sex_key, "method": method}
+    return redirect(url_for("getPrediction", token=token))
+
 @app.route("/results", methods=["GET"])
 def getPrediction():
-    #for i in range(23):
-    #    print(new_data.iloc[:,i])
-    new_data_imputed = new_data.copy()
-    vert_data = 0
-    results = 0
-    sex = request.args.get('sex')
-    regression = request.args.get('regression')
-    count = 22
-    userMsg = ""
-    range_values = [7.84, 8.81, 9.22, 8.12, 6.35, 6.67, 7.52, 5.34, 6.44, 3.91, 4.45, 3.99, 3.27, 3.25, 3.44, 2.32, 2.13, 2.22, 1.94, 1.95, 1.48, 1.31]
-    r2_values = [0.6495834, 0.8036646, 0.8709024, 0.9070805, 0.9294138, 0.9448142, 0.9561731, 0.9643529, 0.9708922, 0.9759164, 0.9799633, 0.983338, 0.9861995, 0.9885503, 0.9906716, 0.9923827, 0.9939365, 0.9952556, 0.9964237, 0.9974959, 0.9984204, 0.9992389]
-    for i in range (new_data_imputed.shape[1]):
-        if (new_data_imputed.iloc[:, i] != 0).all() and (new_data_imputed.iloc[:, i] < min_values[vertebrae_names[i]]).all() or (new_data_imputed.iloc[:, i] > max_values[vertebrae_names[i]]).all():
-                userMsg+=(
-                    f"Warning: The value for {vertebrae_names[i]} is out of bounds! "
-                    f"Expected range: [{min_values[vertebrae_names[i]]}, {max_values[vertebrae_names[i]]}].\n"
-                )
-    #print(userMsg)
-    if(userMsg ==""):
-        userMsg = "Prediction Made Successfully"
-    if regression == "Linear":
-        if sex == 'Male': #selecting correct model and data based on sex
-            vert_data = vert_data_M 
-            results = results_M
-        elif sex == 'Female':
-            vert_data = vert_data_F
-            results = results_F
-        else:
-            vert_data = vert_data_A 
-            results = results_A
-        for i in range(new_data_imputed.shape[1]):
-            if (new_data_imputed.iloc[:, i] == 0).any():
-                count -=1
-                mean_value = vert_data.iloc[:, i].mean()  # Calculate mean
-                new_data_imputed.iloc[:, i] = mean_value
-        X_columns = results["model"].model.exog_names  
-        new_data_imputed = new_data_imputed.reindex(columns=X_columns, fill_value=0)
-        predictions = results["model"].predict(new_data_imputed)
-        #print(results['estimate'])
-        #print(predictions[0])
-        #print(results['R2'])
-        #print(results['SEE'])
-        #print(results['max_estimate'])
-        #print(results['min_estimate'])
-        #print(count)
-        return render_template("results.html", msg=userMsg, prediction=round(predictions[0], 1), r2=round(results['R2'], 4), sse=round(results['SSE'], 4), see=round(results['SEE'], 4), maxP=round(results['max_estimate'], 1), minP=round(results['min_estimate'], 1), er=round(r2_values[count], 4), esse=round(range_values[count], 4))
-    else:
-        if sex == 'Male': #selecting correct model and data based on sex
-            vert_data = vert_data_M 
-            gender = 'M'
-            results = results_M
-        elif sex == 'Female':
-            vert_data = vert_data_F
-            gender = 'F'
-            results = results_F
-        else:
-            vert_data = vert_data_A 
-            gender = 'UD'
-            results = results_A
-        for i in range(new_data_imputed.shape[1]):
-            if (new_data_imputed.iloc[:, i] == 0).any():
-                count -=1
-        #print(count)
-        user_input_data = {
-        'C2': new_data_imputed.iloc[:, 0],
-        'C3': new_data_imputed.iloc[:, 1],
-        'C4': new_data_imputed.iloc[:, 2],
-        'C5': new_data_imputed.iloc[:, 3],
-        'C6': new_data_imputed.iloc[:, 4],
-        'C7': new_data_imputed.iloc[:, 5],
-        'T1': new_data_imputed.iloc[:, 6],
-        'T2': new_data_imputed.iloc[:, 7],
-        'T3': new_data_imputed.iloc[:, 8],
-        'T4': new_data_imputed.iloc[:, 9],
-        'T5': new_data_imputed.iloc[:, 10],
-        'T6': new_data_imputed.iloc[:, 11],
-        'T7': new_data_imputed.iloc[:, 12],
-        'T8': new_data_imputed.iloc[:, 13],
-        'T9': new_data_imputed.iloc[:, 14],
-        'T10': new_data_imputed.iloc[:, 15],
-        'T11': new_data_imputed.iloc[:, 16],
-        'T12': new_data_imputed.iloc[:, 17],
-        'L1': new_data_imputed.iloc[:, 18],
-        'L2': new_data_imputed.iloc[:, 19],
-        'L3': new_data_imputed.iloc[:, 20],
-        'L4': new_data_imputed.iloc[:, 21],
-        'L5': new_data_imputed.iloc[:, 22],
-        }
-        #print("RF")
-        predicted_sum_verts, r_squared, standard_errors, confidence_interval = predict_sum_verts(user_input_data, gender)
-        #predicted_sum_verts = predict_sum_verts(user_input_data, sex)
-        return render_template("results.html", msg = userMsg, prediction = predicted_sum_verts, r2 = r_squared, sse =  round(results_rf[gender]["Mean Squared Error (Cross-Validation)"]*23, 4), see = standard_errors,  maxP = results['max_estimate'], minP = results['min_estimate'] ,er =r2_values[count], esse = range_values[count])
+    token = request.args.get("token")
+    if not token or token not in _USER_STORE:
+        return "Invalid request.", 400
+
+    user_blob = _USER_STORE.pop(token)
+    user_values = user_blob["user_values"]
+    sex_key = user_blob["sex_key"]
+    method = user_blob["method"]
+
+    if len(user_values) == 0:
+        return render_template("results.html")  # 메시지 없이
+
+    # Fit + Predict with ONLY user-provided features
+    try:
+        res = fit_and_predict(user_values, sex_key=sex_key, method=method, k=5, seed=42)
+    except Exception as e:
+        return render_template("results.html")  # 메시지 없이
+
+    # CV plot
+    cv_img = save_cv_boxplots(res["cv"]["details"], title_prefix=f"{method.upper()} ({sex_key})")
+
+    # Random-feature benchmark (fixed 1000 trials)
+    bench = random_feature_benchmark_fixed(user_values, sex_key=sex_key, method=method,
+                                           trials=1000, k=5, seed=2025)
+    bench_img = save_benchmark_histograms(bench["details"])
+
+    # benchmark summary
+    bsum = bench.get("summary", {}) or {}
+    r2_bench_avg  = bsum.get("R2_avg")
+    r2_bench_sd   = bsum.get("R2_sd")
+    rmse_bench_avg = bsum.get("RMSE_avg")
+    rmse_bench_sd  = bsum.get("RMSE_sd")
+    bench_trials   = bsum.get("trials")
+    bench_p        = bsum.get("p")
+    bench_valid    = bsum.get("valid_trials")
+
+    r2_mean = res["cv"]["summary"]["R2_mean"]
+    rmse_mean = res["cv"]["summary"]["RMSE_mean"]
+
+    return render_template(
+        "results.html",
+        # core outputs
+        prediction=round(res["prediction"], 1),
+        pi_lower=round(res["pi_lower"], 1),
+        pi_upper=round(res["pi_upper"], 1),
+        predictors=", ".join(res["predictors"]),
+        sex=sex_key,
+        method=method.upper(),
+        train_n=res["train_n"],
+        cv_k=res["cv"]["summary"]["k"],
+        cv_r2_mean=None if r2_mean is None else round(r2_mean, 4),
+        cv_rmse_mean=None if rmse_mean is None else round(rmse_mean, 4),
+        # images
+        cv_img=cv_img,
+        bench_img=bench_img,
+        # benchmark summary
+        bench_p=bench_p,
+        bench_trials=bench_trials,
+        bench_valid=bench_valid,
+        r2_bench_avg=r2_bench_avg,
+        r2_bench_sd=r2_bench_sd,
+        rmse_bench_avg=rmse_bench_avg,
+        rmse_bench_sd=rmse_bench_sd
+    )
+
 if __name__ == '__main__':
     app.run(debug=True)

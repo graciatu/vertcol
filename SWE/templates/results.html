@@ -1,106 +1,164 @@
 <!DOCTYPE html>
-<script src="https://kit.fontawesome.com/a84d8a8724.js" crossorigin="anonymous"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap" rel="stylesheet">
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-
-    <link rel="stylesheet" href={{url_for('static', filename='styles.css') }} />
-    <title>Results</title>
+  <meta charset="UTF-8" />
+  <title>Results · Sum_Verts Predictor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --muted: #64748b;
+      --line: #e5e7eb;
+      --accent: #4f46e5;
+      --accent-weak: #eef2ff;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 24px;
+      background: var(--bg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: #0f172a;
+    }
+    header { margin-bottom: 12px; }
+    h1 { margin: 0 0 8px; font-size: 22px; }
+    .muted { color: var(--muted); }
+    .container {
+      display: grid; gap: 20px;
+      grid-template-columns: 1fr;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05);
+    }
+    .summary-card h3 { margin: 0 0 12px; font-size: 18px; }
+    .summary-table {
+      width: 100%; border-collapse: collapse; font-size: 14px;
+    }
+    .summary-table th, .summary-table td {
+      padding: 8px 10px; border-top: 1px solid #f1f5f9; vertical-align: top;
+    }
+    .summary-table th { text-align: left; color: #334155; width: 32%; }
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 12px; line-height: 1.6;
+      background: var(--accent-weak); color: #3730a3;
+    }
+    .good  { color: #16a34a; font-weight: 600; }
+    .warn  { color: #b45309; font-weight: 600; }
+    .grid-images { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 900px) { .grid-images { grid-template-columns: 1fr 1fr; } }
+    img.responsive { max-width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); }
+    .back { display: inline-block; margin-top: 12px; text-decoration: none; color: #1f2937; }
+    .back:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-    <div id="containAll">
-        <div id="head">
-            <header>Results</header>
-            <nav>
-                <ul>
-                    <li><i class="fa-solid fa-circle-info"></i><a href={{ url_for('about') }}>About Page</a></li>
-                    <li><i class="fa-solid fa-chart-line"></i><a href={{ url_for('predict') }}>Predict</a></li>
-                </ul>
-            </nav>
-        </div>
-        <h1 id="warningMsg">
-            {{ msg }}
-        </h1>
-        <div class="content-results">
-            <br />
-            <div  id="titlebox" style="margin-bottom: 90px">
-
-            </div>
-            <div class="result-box">
-                <p>
-                    <b>Expected Standard Error of Estimate (SEE):</b> {{ esse }}<br>
-                    <b>Standard Error of Estimate (SEE):</b> {{ see }}<br>
-                    <b>Sum of Squared Errors (SSE):</b> {{ sse }}<br>
-                    <b>Prediction:</b> {{ prediction }}<br>
-                    <b>Expected R² Value:</b> {{ er }}<br>
-                    <b>Max Prediction:</b> {{ maxP }}<br>
-                    <b>Min Prediction:</b> {{ minP }}<br>
-                    <b>R² Value:</b> {{ r2 }}
-
-                </p>
-            </div>
-
-            <!-- Commenting out the scroll-container section to remove graphs and images -->
-            <!--
-            <div class="scroll-container">
-                <img src="static/allVertsTable.jpg" alt="Table of average statistics based on amount of vertebrae entered." onclick="myFunction(this);" style="object-fit:scale-down;">
-                <img src="static/allVertsGraph.jpg" alt="Graph of average statistics on total vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsCtable.jpg" alt="Table of average statistics based on Cervical vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsCgraph.jpg" alt="Graph of average statistics on total Cervical vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsTtable.jpg" alt="Table of average statistics on total Thoracic vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsTgraph.jpg" alt="Graph of average statistics on total Thoracic vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsLtable.jpg" alt="Table of average statistics on total Lumbar vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsLgraph.jpg" alt="Graph of average statistics on total Lumbar vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsCTtable.jpg" alt="Table of average statistics on total Cervical and Thoracic vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsCTgraph.jpg" alt="Graph of average statistics on total Cervical and Thoracic vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsCLtable.jpg" alt="Table of average statistics on total Cervical and Lumbar vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsCLgraph.jpg" alt="Graph of average statistics on total Cervical and Lumbar vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsTLtable.jpg" alt="Table of average statistics on total Thoracic and Lumbar vertebrae entered." onclick="myFunction(this);">
-                <img src="static/vertsTLgraph.jpg" alt="Graph of average statistics on total Thoracic and Lumbar vertebrae entered." onclick="myFunction(this);">
-            </div>
-            -->
-            
-            <!-- The expanding image container -->
-            <div class="container">
-                <!-- Close the image -->
-                <span onclick="this.parentElement.style.display = 'none'" class="closebtn">&times;</span>
-
-                <img id="expandedImg">
-                <!-- Image text -->
-                <div id="imgtext"></div>
-            </div>
-        </div>
-        <footer>
-            <p>© 2024 Vertebrae Prediction Tool. All rights reserved.</p>
-        </footer>
-        <script>
-            document.querySelector('.closebtn').addEventListener('click', function() {
-            // Reset the margin-bottom of the title box
-            document.getElementById('titlebox').style.marginBottom = '100px';
-            });
-            function myFunction(imgs) {
-                const expandImg = document.getElementById("expandedImg");
-                const imgText = document.getElementById("imgtext");
-
-                expandImg.src = imgs.src;
-                imgText.innerHTML = imgs.alt;
-                document.getElementById("titlebox").style.marginBottom = "-50px";
-                expandImg.parentElement.style.display = "block";
-
-                // Adjust font size for a specific image
-                if (imgs.src.includes("static/vertsLtable.jpg") || imgs.src.includes("static/vertsCtable.jpg")) {
-                    imgText.style.fontSize = "20px"; // Smaller font size for this image
-                } else {
-                    imgText.style.fontSize = "40px"; // Default font size
-                }
-            }
-        </script>
+  <header class="container">
+    <div>
+      <h1>Prediction Results</h1>
+      <p class="muted">Model trains dynamically using only the vertebrae you provided.</p>
     </div>
+  </header>
+
+  <main class="container">
+    <!-- SUMMARY CARD -->
+    <section class="card summary-card">
+      <h3>Prediction Summary</h3>
+      <table class="summary-table">
+        <tr>
+          <th>Sex / Method</th>
+          <td>
+            <span class="badge">{{ sex|default("UD") }}</span>
+            <span class="badge">{{ method|default("OLS") }}</span>
+          </td>
+        </tr>
+        <tr>
+          <th>Predictors used</th>
+          <td>{{ predictors|default("—") }}</td>
+        </tr>
+        <tr>
+          <th>Training size (rows)</th>
+          <td>{{ train_n|default("—") }}</td>
+        </tr>
+        <tr>
+          <th>Prediction (Sum_Verts)</th>
+          <td>
+            <strong>{{ prediction|default("—") }}</strong>
+            {% if pi_lower is not none and pi_upper is not none %}
+              <span class="muted"> &nbsp;95% PI: [{{ pi_lower }}, {{ pi_upper }}]</span>
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <th>CV (k-fold)</th>
+          <td>
+            k = {{ cv_k|default("—") }},
+            R² = {{ cv_r2_mean|default("—") }},
+            RMSE = {{ cv_rmse_mean|default("—") }}
+          </td>
+        </tr>
+        <tr>
+          <th>Random-feature benchmark (same p, 1000 trials)</th>
+          <td>
+            p = {{ bench_p|default("—") }},
+            trials = {{ bench_trials|default("—") }},
+            valid = {{ bench_valid|default("—") }}<br>
+            Avg R² = {{ r2_bench_avg|round(4)|default("—") }} (± {{ r2_bench_sd|round(4)|default("—") }}),
+            Avg RMSE = {{ rmse_bench_avg|round(4)|default("—") }} (± {{ rmse_bench_sd|round(4)|default("—") }})
+          </td>
+        </tr>
+        {% if cv_r2_mean and r2_bench_avg %}
+        <tr>
+          <th>Comparison vs. random benchmark</th>
+          <td>
+            {% set r2_diff = cv_r2_mean - r2_bench_avg %}
+            {% set rmse_diff = rmse_bench_avg - cv_rmse_mean %}
+            <div>
+              R² difference (yours − avg random) :
+              {% if r2_diff >= 0 %}
+                <span class="good">+{{ r2_diff|round(4) }}</span>
+              {% else %}
+                <span class="warn">{{ r2_diff|round(4) }}</span>
+              {% endif %}
+            </div>
+            <div>
+              RMSE difference (avg random − yours) :
+              {% if rmse_diff >= 0 %}
+                <span class="good">+{{ rmse_diff|round(4) }}</span>
+              {% else %}
+                <span class="warn">{{ rmse_diff|round(4) }}</span>
+              {% endif %}
+            </div>
+            <div class="muted">Positive values mean your chosen predictors performed better than random on average.</div>
+          </td>
+        </tr>
+        {% endif %}
+      </table>
+    </section>
+
+    <!-- IMAGES: CV & BENCHMARK -->
+    <section class="grid-images">
+      {% if cv_img %}
+        <div class="card">
+          <h3 style="margin-top:0;">Cross-Validation (R² / RMSE)</h3>
+          <img src="{{ cv_img }}" alt="CV boxplots" class="responsive" />
+        </div>
+      {% endif %}
+
+      {% if bench_img %}
+        <div class="card">
+          <h3 style="margin-top:0;">Random-feature benchmark (1000 trials)</h3>
+          <img src="{{ bench_img }}" alt="Benchmark histograms" class="responsive" />
+        </div>
+      {% endif %}
+    </section>
+
+    <div>
+      <a href="{{ url_for('predict') }}" class="back">← Make another estimate</a>
+    </div>
+  </main>
 </body>
 </html>
