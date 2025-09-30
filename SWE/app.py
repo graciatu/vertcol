@@ -296,70 +296,78 @@ def input():
 
 @app.route("/results", methods=["GET"])
 def getPrediction():
-    token = request.args.get("token")
-    if not token or token not in _USER_STORE:
-        return "Invalid request.", 400
-
-    user_blob = _USER_STORE.pop(token)
-    user_values = user_blob["user_values"]
-    sex_key = user_blob["sex_key"]
-    method = user_blob["method"]
-
-    if len(user_values) == 0:
-        return render_template("results.html")  # 메시지 없이
-
-    # Fit + Predict with ONLY user-provided features
     try:
-        res = fit_and_predict(user_values, sex_key=sex_key, method=method, k=5, seed=42)
-    except Exception as e:
-        return render_template("results.html")  # 메시지 없이
+        token = request.args.get("token")
+        if not token or token not in _USER_STORE:
+            return "Invalid request.", 400
 
-    # CV plot
-    cv_img = save_cv_boxplots(res["cv"]["details"], title_prefix=f"{method.upper()} ({sex_key})")
+        user_blob = _USER_STORE.pop(token)
+        user_values = user_blob["user_values"]
+        sex_key = user_blob["sex_key"]
+        method = user_blob["method"]
 
-    # Random-feature benchmark (fixed 1000 trials)
-    bench = random_feature_benchmark_fixed(user_values, sex_key=sex_key, method=method,
-                                           trials=1000, k=5, seed=2025)
-    bench_img = save_benchmark_histograms(bench["details"])
+        if len(user_values) == 0:
+            print("No user values provided")
+            return render_template("results.html")  # 메시지 없이
 
-    # benchmark summary
-    bsum = bench.get("summary", {}) or {}
-    r2_bench_avg  = bsum.get("R2_avg")
-    r2_bench_sd   = bsum.get("R2_sd")
-    rmse_bench_avg = bsum.get("RMSE_avg")
-    rmse_bench_sd  = bsum.get("RMSE_sd")
-    bench_trials   = bsum.get("trials")
-    bench_p        = bsum.get("p")
-    bench_valid    = bsum.get("valid_trials")
+        # Fit + Predict with ONLY user-provided features
+        try:
+            res = fit_and_predict(user_values, sex_key=sex_key, method=method, k=5, seed=42)
+        except Exception as e:
+            print(f"ERROR in fit_and_predict: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return render_template("results.html")  # 메시지 없이
 
-    r2_mean = res["cv"]["summary"]["R2_mean"]
-    rmse_mean = res["cv"]["summary"]["RMSE_mean"]
+        # CV plot
+        cv_img = save_cv_boxplots(res["cv"]["details"], title_prefix=f"{method.upper()} ({sex_key})")
 
-    return render_template(
-        "results.html",
-        # core outputs
-        prediction=round(res["prediction"], 1),
-        pi_lower=round(res["pi_lower"], 1),
-        pi_upper=round(res["pi_upper"], 1),
-        predictors=", ".join(res["predictors"]),
-        sex=sex_key,
-        method=method.upper(),
-        train_n=res["train_n"],
-        cv_k=res["cv"]["summary"]["k"],
-        cv_r2_mean=None if r2_mean is None else round(r2_mean, 4),
-        cv_rmse_mean=None if rmse_mean is None else round(rmse_mean, 4),
-        # images
-        cv_img=cv_img,
-        bench_img=bench_img,
+        # Random-feature benchmark (fixed 1000 trials)
+        bench = random_feature_benchmark_fixed(user_values, sex_key=sex_key, method=method,
+                                            trials=1000, k=5, seed=2025)
+        bench_img = save_benchmark_histograms(bench["details"])
+
         # benchmark summary
-        bench_p=bench_p,
-        bench_trials=bench_trials,
-        bench_valid=bench_valid,
-        r2_bench_avg=r2_bench_avg,
-        r2_bench_sd=r2_bench_sd,
-        rmse_bench_avg=rmse_bench_avg,
-        rmse_bench_sd=rmse_bench_sd
-    )
+        bsum = bench.get("summary", {}) or {}
+        r2_bench_avg  = bsum.get("R2_avg")
+        r2_bench_sd   = bsum.get("R2_sd")
+        rmse_bench_avg = bsum.get("RMSE_avg")
+        rmse_bench_sd  = bsum.get("RMSE_sd")
+        bench_trials   = bsum.get("trials")
+        bench_p        = bsum.get("p")
+        bench_valid    = bsum.get("valid_trials")
 
+        r2_mean = res["cv"]["summary"]["R2_mean"]
+        rmse_mean = res["cv"]["summary"]["RMSE_mean"]
+
+        return render_template(
+            "results.html",
+            # core outputs
+            prediction=round(res["prediction"], 1),
+            pi_lower=round(res["pi_lower"], 1),
+            pi_upper=round(res["pi_upper"], 1),
+            predictors=", ".join(res["predictors"]),
+            sex=sex_key,
+            method=method.upper(),
+            train_n=res["train_n"],
+            cv_k=res["cv"]["summary"]["k"],
+            cv_r2_mean=None if r2_mean is None else round(r2_mean, 4),
+            cv_rmse_mean=None if rmse_mean is None else round(rmse_mean, 4),
+            # images
+            cv_img=cv_img,
+            bench_img=bench_img,
+            # benchmark summary
+            bench_p=bench_p,
+            bench_trials=bench_trials,
+            bench_valid=bench_valid,
+            r2_bench_avg=r2_bench_avg,
+            r2_bench_sd=r2_bench_sd,
+            rmse_bench_avg=rmse_bench_avg,
+            rmse_bench_sd=rmse_bench_sd
+        )
+    
+    except Exception as e:
+        return f"Prediction Error: {str(e)}", 500
+    
 if __name__ == '__main__':
     app.run(debug=True)
